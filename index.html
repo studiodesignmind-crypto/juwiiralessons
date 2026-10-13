@@ -4,37 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Progress Tracker</title>
-    <!-- Fontes da Marca: Century Gothic (corpo) e Harlow Solid / Cursiva elegante (headings) -->
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <style>
+        /* Importação das fontes do sistema e fallbacks */
+        @font-face {
+            font-family: 'Harlow Solid';
+            src: local('Harlow Solid'), local('Harlow Solid Italic');
+        }
+
         :root {
-            --primary-dark: #502064;
-            --primary-red: #6B0F1A;
-            --dark-neutral: #1A1A1A;
-            --accent-purple: #6B3A7E;
-            --light-lavender: #D8B4D9;
-            --accent-pink: #F48FB1;
-            --bg-light: #FAF8FC;
-            --card-bg: #FFFFFF;
-            --text-main: #2A202E;
+            --brand-purple-dark: #502064;
+            --brand-red: #6B0F1A;
+            --brand-dark: #1A1A1A;
+            --brand-purple-mid: #6B3A7E;
+            --brand-lavender: #D8B4D9;
+            --brand-pink: #F48FB1;
+            
+            --bg-white: #FFFFFF;
+            --text-dark: #1A1A1A;
         }
 
         body {
-            font-family: 'Century Gothic', 'Montserrat', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-main);
+            font-family: 'Century Gothic', sans-serif;
+            background-color: var(--bg-white);
+            color: var(--text-dark);
             margin: 0;
             padding: 20px;
         }
 
-        h1, h2, h3, .brand-title {
-            font-family: 'Harlow Solid Italic', 'Dancing Script', cursive;
-            color: var(--primary-dark);
+        h1, h2, h3, .accordion-header, .post-it h3 {
+            font-family: 'Harlow Solid', 'Harlow Solid Italic', cursive;
         }
 
         .main-container {
@@ -58,21 +61,22 @@
         }
 
         header h1 {
-            font-size: 2.8rem;
+            font-size: 3rem;
             margin-bottom: 20px;
             text-align: center;
+            color: var(--brand-purple-dark);
         }
 
-        /* Cabeçalho limpo sem caixas visíveis */
+        /* Cabeçalho do Aluno (Design Limpo sobre Fundo Branco) */
         .student-header {
-            background: var(--card-bg);
+            background: #FFFFFF;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(80, 32, 100, 0.05);
-            border: 1px solid rgba(216, 180, 217, 0.3);
+            border: 2px solid var(--brand-lavender);
+            box-shadow: 0 4px 12px rgba(80, 32, 100, 0.08);
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 18px;
         }
 
         .student-header .full-width {
@@ -87,18 +91,19 @@
         }
 
         .clean-field label {
-            font-weight: 600;
-            color: var(--primary-dark);
+            font-weight: bold;
+            color: var(--brand-purple-dark);
             white-space: nowrap;
+            font-family: 'Century Gothic', sans-serif;
         }
 
         .clean-field input {
             border: none;
-            border-bottom: 2px solid var(--light-lavender);
+            border-bottom: 2px solid var(--brand-pink);
             background: transparent;
             font-family: 'Century Gothic', sans-serif;
             font-size: 1rem;
-            color: var(--text-main);
+            color: var(--brand-dark);
             width: 100%;
             outline: none;
             padding: 4px 2px;
@@ -106,34 +111,39 @@
         }
 
         .clean-field input:focus {
-            border-bottom-color: var(--primary-dark);
+            border-bottom-color: var(--brand-purple-dark);
         }
 
-        /* Accordions / Abas retráteis */
+        /* Abas Retráteis (Accordions) */
         .accordion {
-            background: var(--card-bg);
+            background: #FFFFFF;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(80, 32, 100, 0.05);
-            border: 1px solid rgba(216, 180, 217, 0.3);
+            border: 2px solid var(--brand-purple-mid);
+            box-shadow: 0 4px 10px rgba(107, 58, 126, 0.1);
             overflow: hidden;
         }
 
         .accordion-header {
-            background: linear-gradient(135deg, rgba(216, 180, 217, 0.2), rgba(107, 58, 126, 0.1));
-            padding: 18px 25px;
+            background-color: var(--brand-purple-mid);
+            color: #FFFFFF;
+            padding: 16px 25px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-dark);
+            font-size: 1.8rem;
             user-select: none;
+            transition: background 0.3s;
+        }
+
+        .accordion-header:hover {
+            background-color: var(--brand-purple-dark);
         }
 
         .accordion-header::after {
             content: '▼';
-            font-size: 0.9rem;
+            font-size: 1rem;
+            font-family: sans-serif;
             transition: transform 0.3s;
         }
 
@@ -146,6 +156,7 @@
             overflow: hidden;
             transition: max-height 0.3s ease-out;
             padding: 0 25px;
+            background: #FFFFFF;
         }
 
         .accordion.active .accordion-content {
@@ -153,7 +164,7 @@
             padding: 20px 25px 25px 25px;
         }
 
-        /* Tabelas e Campos nas Abas */
+        /* Tabelas */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -161,30 +172,31 @@
         }
 
         th, td {
-            border: 1px solid var(--light-lavender);
+            border: 1px solid var(--brand-lavender);
             padding: 12px;
             text-align: left;
             vertical-align: top;
+            font-family: 'Century Gothic', sans-serif;
         }
 
         th {
-            background-color: rgba(107, 58, 126, 0.1);
-            color: var(--primary-dark);
-            font-size: 0.95rem;
+            background-color: var(--brand-purple-dark);
+            color: #FFFFFF;
+            font-size: 1rem;
         }
 
         td[contenteditable="true"] {
             outline: none;
-            background: rgba(250, 248, 252, 0.5);
+            background: #FFFFFF;
             transition: background 0.2s;
         }
 
         td[contenteditable="true"]:focus {
-            background: #fff;
-            box-shadow: inset 0 0 0 2px var(--accent-purple);
+            background: #FFF0F5;
+            box-shadow: inset 0 0 0 2px var(--brand-pink);
         }
 
-        /* Session & Lesson Log (Sempre aberto por padrão) */
+        /* Session & Lesson Log Cards */
         .cards-container {
             display: flex;
             flex-direction: column;
@@ -193,80 +205,92 @@
         }
 
         .session-card {
-            background: var(--bg-light);
-            border: 1px solid var(--light-lavender);
+            background: #FAF3FB;
+            border: 2px solid var(--brand-lavender);
             border-radius: 10px;
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            position: relative;
         }
 
         .session-card label {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--primary-dark);
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: var(--brand-purple-dark);
+            font-family: 'Century Gothic', sans-serif;
         }
 
         .session-card input, .session-card textarea {
             width: 100%;
-            border: 1px solid var(--light-lavender);
+            border: 1px solid var(--brand-lavender);
             border-radius: 6px;
             padding: 10px;
             font-family: 'Century Gothic', sans-serif;
             font-size: 0.95rem;
-            background: #fff;
+            background: #FFFFFF;
+            color: var(--brand-dark);
             outline: none;
             resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .session-card input:focus, .session-card textarea:focus {
+            border-color: var(--brand-purple-mid);
         }
 
         .session-card textarea {
             min-height: 70px;
         }
 
+        /* Botões */
         .btn {
-            background-color: var(--primary-dark);
-            color: white;
+            background-color: var(--brand-purple-dark);
+            color: #FFFFFF;
             border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
             font-family: 'Century Gothic', sans-serif;
-            font-weight: 600;
+            font-weight: bold;
+            font-size: 1rem;
             transition: background 0.2s;
             align-self: flex-start;
         }
 
         .btn:hover {
-            background-color: var(--accent-purple);
+            background-color: var(--brand-purple-mid);
         }
 
         .btn-delete {
-            background-color: var(--primary-red);
-            padding: 6px 12px;
-            font-size: 0.8rem;
+            background-color: var(--brand-red);
+            padding: 8px 14px;
+            font-size: 0.85rem;
             align-self: flex-end;
         }
 
-        /* Post-it Lateral */
+        .btn-delete:hover {
+            background-color: #4A0A12;
+        }
+
+        /* Post-it Lateral (Usando a cor Rosa Vibrante #F48FB1 da ID Visual) */
         .post-it {
-            background: #fffde1;
+            background-color: var(--brand-pink);
+            color: var(--brand-dark);
             padding: 25px;
-            border-radius: 2px;
-            box-shadow: 2px 5px 15px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            box-shadow: 4px 6px 18px rgba(0,0,0,0.15);
             position: sticky;
             top: 20px;
             height: fit-content;
-            border-top: 8px solid #f2e6b1;
             transform: rotate(1deg);
         }
 
         .post-it h3 {
             margin-top: 0;
-            font-size: 1.8rem;
-            color: var(--primary-dark);
-            border-bottom: 2px dashed #e6db9c;
+            font-size: 2rem;
+            color: var(--brand-purple-dark);
+            border-bottom: 2px dashed var(--brand-purple-dark);
             padding-bottom: 8px;
         }
 
@@ -275,40 +299,44 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 12px;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            font-family: 'Century Gothic', sans-serif;
             cursor: pointer;
         }
 
         .topic-item input[type="checkbox"] {
-            accent-color: var(--primary-dark);
-            width: 18px;
-            height: 18px;
+            accent-color: var(--brand-purple-dark);
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
 
         .topic-item.completed span {
             text-decoration: line-through;
-            color: #888;
+            color: rgba(26, 26, 26, 0.5);
         }
 
         .add-topic-box {
             display: flex;
             gap: 8px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .add-topic-box input {
             flex: 1;
-            padding: 8px;
-            border: 1px solid #dcd69f;
-            border-radius: 4px;
+            padding: 10px;
+            border: 1px solid var(--brand-purple-dark);
+            border-radius: 6px;
             font-family: 'Century Gothic', sans-serif;
+            background: #FFFFFF;
         }
 
         .sync-status {
             text-align: center;
-            font-size: 0.85rem;
-            color: var(--accent-purple);
+            font-size: 0.9rem;
+            color: var(--brand-purple-mid);
             margin-top: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -320,15 +348,15 @@
                 <h1>Student Progress Tracker</h1>
             </header>
 
-            <!-- Cabeçalho do Aluno (Sem caixas pesadas) -->
+            <!-- Cabeçalho do Aluno (Fundo branco com realces coloridos) -->
             <div class="student-header">
                 <div class="clean-field full-width">
                     <label>Student:</label>
-                    <input type="text" id="field-student" placeholder="Nome do aluno">
+                    <input type="text" id="field-student" placeholder="Student's name">
                 </div>
                 <div class="clean-field full-width">
                     <label>Day and time of lessons:</label>
-                    <input type="text" id="field-datetime" placeholder="Ex: Mondays and Wednesdays at 14:00">
+                    <input type="text" id="field-datetime" placeholder="e.g. Mondays and Wednesdays at 14:00">
                 </div>
                 <div class="clean-field">
                     <label>Start date:</label>
@@ -350,7 +378,7 @@
                 <div class="accordion-content">
                     <table>
                         <tr>
-                            <th>Category</th>
+                            <th style="width: 35%;">Category</th>
                             <th>Details</th>
                         </tr>
                         <tr>
@@ -402,7 +430,7 @@
                 </div>
             </div>
 
-            <!-- Aba 3: Session & Lesson Log (Aberta por padrão) -->
+            <!-- Aba 3: Session & Lesson Log (Sempre aberta por padrão) -->
             <div class="accordion active" id="session-accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">Session & Lesson Log</div>
                 <div class="accordion-content" style="max-height: none;">
@@ -416,7 +444,7 @@
             <div class="sync-status" id="sync-status">All changes saved</div>
         </div>
 
-        <!-- Coluna Lateral Post-it -->
+        <!-- Coluna Lateral Post-it (Rosa #F48FB1 da ID Visual) -->
         <aside class="post-it">
             <h3>Suggested Topics</h3>
             <div id="topics-list">
@@ -424,13 +452,13 @@
             </div>
             <div class="add-topic-box">
                 <input type="text" id="new-topic-input" placeholder="New topic...">
-                <button class="btn" onclick="addTopic()" style="padding: 8px 12px;">+</button>
+                <button class="btn" onclick="addTopic()" style="padding: 10px 14px; background: var(--brand-purple-dark);">+</button>
             </div>
         </aside>
     </div>
 
     <script>
-        // Configuração do Firebase[cite: 6]
+        // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCqGSUBBkQzLhG7BAHPFDhKUD9wAIN5wVg",
             authDomain: "julianawiiraenglishlessons.firebaseapp.com",
@@ -443,10 +471,9 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Referência única para o documento de dados do aluno
+        // Referência do documento único para sincronização
         const docRef = db.collection("tracker").doc("studentData");
 
-        // Função para alternar abas retráteis
         function toggleAccordion(header) {
             const accordion = header.parentElement;
             accordion.classList.toggle('active');
@@ -455,7 +482,6 @@
         let isSaving = false;
         let saveTimeout = null;
 
-        // Salvar dados no Firebase com debounce para sincronização fluida
         function saveData() {
             if (isSaving) return;
             document.getElementById('sync-status').innerText = "Saving changes...";
@@ -493,7 +519,6 @@
             }, 800);
         }
 
-        // Coleta dados dos cards de sessões
         function getCardsData() {
             const cards = [];
             document.querySelectorAll('.session-card').forEach(card => {
@@ -507,7 +532,6 @@
             return cards;
         }
 
-        // Coleta dados dos tópicos do Post-it
         function getTopicsData() {
             const topics = [];
             document.querySelectorAll('.topic-item').forEach(item => {
@@ -519,20 +543,18 @@
             return topics;
         }
 
-        // Renderiza os cards de aulas
         function renderCards(cards = []) {
             const wrapper = document.getElementById('cards-wrapper');
             wrapper.innerHTML = '';
             if (cards.length === 0) {
-                // Adiciona um card padrão vazio se não houver nenhum
                 cards = [{topic: '', covered: '', teacherNotes: '', studentNotes: ''}];
             }
-            cards.forEach((c, index) => {
+            cards.forEach((c) => {
                 const div = document.createElement('div');
                 div.className = 'session-card';
                 div.innerHTML = `
                     <label>Date and topic:</label>
-                    <input type="text" class="card-topic" value="${c.topic || ''}" placeholder="Ex: 15/10 - Past Perfect">
+                    <input type="text" class="card-topic" value="${c.topic || ''}" placeholder="e.g. 15/10 - Past Perfect">
                     
                     <label>Covered in session:</label>
                     <textarea class="card-covered" placeholder="Topics and exercises covered...">${c.covered || ''}</textarea>
@@ -545,7 +567,6 @@
                     
                     <button class="btn btn-delete" onclick="removeCard(this)">Delete Session</button>
                 `;
-                // Adiciona escutadores para auto-salvamento
                 div.querySelectorAll('input, textarea').forEach(el => {
                     el.addEventListener('input', saveData);
                 });
@@ -559,7 +580,7 @@
             div.className = 'session-card';
             div.innerHTML = `
                 <label>Date and topic:</label>
-                <input type="text" class="card-topic" placeholder="Ex: 15/10 - Past Perfect">
+                <input type="text" class="card-topic" placeholder="e.g. 15/10 - Past Perfect">
                 
                 <label>Covered in session:</label>
                 <textarea class="card-covered" placeholder="Topics and exercises covered..."></textarea>
@@ -584,11 +605,10 @@
             saveData();
         }
 
-        // Renderiza os tópicos do Post-it
         function renderTopics(topics = []) {
             const list = document.getElementById('topics-list');
             list.innerHTML = '';
-            topics.forEach((t, index) => {
+            topics.forEach((t) => {
                 const div = document.createElement('div');
                 div.className = `topic-item ${t.completed ? 'completed' : ''}`;
                 div.innerHTML = `
@@ -624,11 +644,11 @@
             saveData();
         }
 
-        // Escutador em tempo real do Firebase (Sincronização geral automática)
+        // Sincronização em tempo real via Firestore
         docRef.onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
-                // Preenche campos de texto do topo se não estiver focado neles
+                
                 if (document.activeElement !== document.getElementById('field-student')) document.getElementById('field-student').value = data.student || '';
                 if (document.activeElement !== document.getElementById('field-datetime')) document.getElementById('field-datetime').value = data.datetime || '';
                 if (document.activeElement !== document.getElementById('field-start')) document.getElementById('field-start').value = data.start || '';
@@ -651,12 +671,10 @@
             }
         });
 
-        // Adicionar eventos de salvamento aos campos editáveis normais
         document.querySelectorAll('input, [contenteditable="true"]').forEach(el => {
             el.addEventListener('input', saveData);
         });
 
-        // Inicialização padrão caso o banco esteja vazio
         window.onload = () => {
             docRef.get().then(doc => {
                 if (!doc.exists) {
