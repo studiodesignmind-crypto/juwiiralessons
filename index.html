@@ -169,7 +169,7 @@
             font-family: 'Century Gothic', sans-serif;
         }
 
-        .clean-field input, .clean-field a {
+        .clean-field input, .clean-field .link-container {
             border: none;
             border-bottom: 2px solid var(--border-color);
             background: transparent;
@@ -179,7 +179,6 @@
             width: 100%;
             outline: none;
             padding: 4px 2px;
-            text-decoration: none;
             transition: border-color 0.3s;
         }
 
@@ -187,14 +186,20 @@
             border-bottom-color: var(--brand-red);
         }
 
-        .clean-field a {
-            color: var(--brand-purple-mid);
-            font-weight: 600;
-            border-bottom: 2px solid var(--brand-lavender);
-            word-break: break-all;
+        .link-container {
+            display: inline-block;
+            cursor: text;
+            min-height: 24px;
         }
 
-        .clean-field a:hover {
+        .link-container a {
+            color: var(--brand-purple-mid);
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px dotted var(--brand-purple-mid);
+        }
+
+        .link-container a:hover {
             color: var(--brand-red);
             border-bottom-color: var(--brand-red);
         }
@@ -477,11 +482,7 @@
                 </div>
                 <div class="clean-field full-width">
                     <label>Call link:</label>
-                    <input type="text" id="field-link" placeholder="Paste link here (e.g. https://zoom.us/...)">
-                </div>
-                <div class="clean-field full-width">
-                    <label>Access link:</label>
-                    <a id="display-link" href="#" target="_blank">No link provided yet</a>
+                    <div id="field-link" class="link-container" contenteditable="true" data-placeholder="Paste or type meeting link here..."></div>
                 </div>
             </div>
 
@@ -554,7 +555,7 @@
                 </div>
             </div>
 
-            <div class="sync-status" id="sync-status">All changes saved</div>
+            <div class="sync-status" id="sync-status">Loading data...</div>
         </div>
 
         <!-- Coluna Lateral Post-it -->
@@ -570,7 +571,7 @@
         </aside>
     </div>
 
-    <!-- Barra de Ferramentas de Formatação Discreta / Flutuante -->
+    <!-- Barra de Ferramentas de Formatação Flutuante -->
     <div class="toolbar-wrapper">
         <div class="format-toolbar" id="formatToolbar">
             <button class="format-btn" onclick="formatText('bold')"><b>B</b></button>
@@ -593,7 +594,6 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
         const docRef = db.collection("tracker").doc("studentData");
 
         function toggleAccordion(header) {
@@ -611,22 +611,27 @@
             saveData();
         }
 
-        function updateLinkDisplay(url) {
-            const linkElement = document.getElementById('display-link');
-            if (url && url.trim() !== '') {
-                let formattedUrl = url.trim();
+        const linkDiv = document.getElementById('field-link');
+        
+        linkDiv.addEventListener('focus', () => {
+            const rawUrl = linkDiv.getAttribute('data-raw-url') || '';
+            linkDiv.innerText = rawUrl;
+        });
+
+        linkDiv.addEventListener('blur', () => {
+            const text = linkDiv.innerText.trim();
+            linkDiv.setAttribute('data-raw-url', text);
+            if (text !== '') {
+                let formattedUrl = text;
                 if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
                     formattedUrl = 'https://' + formattedUrl;
                 }
-                linkElement.href = formattedUrl;
-                linkElement.innerText = formattedUrl;
-                linkElement.style.fontStyle = 'normal';
+                linkDiv.innerHTML = `<a href="${formattedUrl}" target="_blank">${text}</a>`;
             } else {
-                linkElement.href = '#';
-                linkElement.innerText = 'No link provided yet';
-                linkElement.style.fontStyle = 'italic';
+                linkDiv.innerHTML = `<span style="color: #999; font-style: italic;">Paste or type meeting link here...</span>`;
             }
-        }
+            saveData();
+        });
 
         let saveTimeout = null;
 
@@ -635,12 +640,14 @@
             
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(() => {
+                const rawLink = linkDiv.getAttribute('data-raw-url') || '';
+                
                 const data = {
                     student: document.getElementById('field-student').value || '',
                     datetime: document.getElementById('field-datetime').value || '',
                     start: document.getElementById('field-start').value || '',
                     end: document.getElementById('field-end').value || '',
-                    link: document.getElementById('field-link').value || '',
+                    link: rawLink,
                     
                     chatGoals: document.getElementById('chat-goals').innerHTML || '',
                     chatConcerned: document.getElementById('chat-concerned').innerHTML || '',
@@ -660,10 +667,10 @@
                 docRef.set(data, { merge: true }).then(() => {
                     document.getElementById('sync-status').innerText = "All changes saved";
                 }).catch((error) => {
-                    console.error("Error saving: ", error);
-                    document.getElementById('sync-status').innerText = "Error saving changes";
+                    console.error("Error saving to Firebase: ", error);
+                    document.getElementById('sync-status').innerText = "Error saving: Check Firebase Rules";
                 });
-            }, 500);
+            }, 600);
         }
 
         function getCardsData() {
@@ -793,7 +800,7 @@
             saveData();
         }
 
-        // Listener do Firebase em Tempo Real
+        // Listener Sincronizado do Firebase
         docRef.onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
@@ -803,9 +810,18 @@
                 if (document.activeElement !== document.getElementById('field-start')) document.getElementById('field-start').value = data.start || '';
                 if (document.activeElement !== document.getElementById('field-end')) document.getElementById('field-end').value = data.end || '';
                 
-                if (document.activeElement !== document.getElementById('field-link')) {
-                    document.getElementById('field-link').value = data.link || '';
-                    updateLinkDisplay(data.link || '');
+                if (document.activeElement !== linkDiv) {
+                    const savedLink = data.link || '';
+                    linkDiv.setAttribute('data-raw-url', savedLink);
+                    if (savedLink.trim() !== '') {
+                        let formattedUrl = savedLink.trim();
+                        if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
+                            formattedUrl = 'https://' + formattedUrl;
+                        }
+                        linkDiv.innerHTML = `<a href="${formattedUrl}" target="_blank">${savedLink}</a>`;
+                    } else {
+                        linkDiv.innerHTML = `<span style="color: #999; font-style: italic;">Paste or type meeting link here...</span>`;
+                    }
                 }
 
                 if (document.activeElement !== document.getElementById('chat-goals')) document.getElementById('chat-goals').innerHTML = data.chatGoals || '';
@@ -821,29 +837,25 @@
 
                 if (data.cards) renderCards(data.cards);
                 if (data.topics) renderTopics(data.topics);
+                
+                document.getElementById('sync-status').innerText = "All changes saved";
+            } else {
+                renderCards();
+                renderTopics([
+                    { text: "Present Perfect vs Past Simple", completed: false },
+                    { text: "Conditional Sentences", completed: false }
+                ]);
             }
+        }, (error) => {
+            console.error("Firebase Snapshot Error:", error);
+            document.getElementById('sync-status').innerText = "Error: Check Firebase Rules!";
         });
 
-        // Configuração Inicial e Atribuição Global de Listeners
+        // Eventos Globais de Salvamento
         window.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('input, [contenteditable="true"]').forEach(el => {
+            document.querySelectorAll('input, [contenteditable="true"]:not(#field-link)').forEach(el => {
                 el.addEventListener('input', saveData);
                 el.addEventListener('blur', saveData);
-            });
-
-            document.getElementById('field-link').addEventListener('input', (e) => {
-                updateLinkDisplay(e.target.value);
-            });
-
-            docRef.get().then(doc => {
-                if (!doc.exists) {
-                    renderCards();
-                    renderTopics([
-                        { text: "Present Perfect vs Past Simple", completed: false },
-                        { text: "Conditional Sentences", completed: false }
-                    ]);
-                    saveData();
-                }
             });
         });
     </script>
