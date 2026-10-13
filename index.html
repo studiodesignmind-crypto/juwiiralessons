@@ -25,7 +25,7 @@
             --brand-lavender: #D8B4D9;
             --brand-pink: #F48FB1;
             
-            /* Paleta Nude / Rose com Alto Contraste */
+            /* Paleta Nude / Rose Elegante sem "bege sobre bege" */
             --bg-main: #F4EBEB;
             --card-bg: #FFFDFD;
             --input-bg: #F9F2F2;
@@ -70,7 +70,7 @@
             font-size: 3.6rem;
             margin-bottom: 10px;
             text-align: center;
-            color: var(--brand-red);
+            color: var(--brand-purple-dark);
             font-weight: normal;
         }
 
@@ -81,7 +81,7 @@
             border-radius: 16px;
             border: 2px solid var(--border-color);
             border-left: 6px solid var(--brand-red);
-            box-shadow: 0 4px 15px rgba(26, 26, 26, 0.05);
+            box-shadow: 0 4px 15px rgba(80, 32, 100, 0.05);
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
@@ -100,7 +100,7 @@
 
         .clean-field label {
             font-weight: bold;
-            color: var(--brand-red);
+            color: var(--brand-purple-dark);
             white-space: nowrap;
             font-family: 'Century Gothic', sans-serif;
         }
@@ -122,18 +122,18 @@
             border-bottom-color: var(--brand-red);
         }
 
-        /* Abas Retráteis (Preto e Vermelho intencionais) */
+        /* Abas Retráteis (Roxo elegante com transição para vermelho no hover) */
         .accordion {
             background: var(--card-bg);
             border-radius: 16px;
             border: 2px solid var(--border-color);
-            box-shadow: 0 4px 15px rgba(26, 26, 26, 0.05);
+            box-shadow: 0 4px 15px rgba(80, 32, 100, 0.05);
             overflow: hidden;
             transition: box-shadow 0.3s ease;
         }
 
         .accordion-header {
-            background-color: var(--brand-dark);
+            background-color: var(--brand-purple-dark);
             color: #FFFFFF;
             padding: 20px 30px;
             cursor: pointer;
@@ -146,7 +146,7 @@
         }
 
         .accordion-header:hover {
-            background-color: var(--brand-red);
+            background-color: var(--brand-purple-mid);
         }
 
         .accordion-header::after {
@@ -201,6 +201,7 @@
             outline: none;
             background: var(--input-bg);
             transition: background 0.2s;
+            color: var(--brand-dark);
         }
 
         td[contenteditable="true"]:focus {
@@ -230,7 +231,7 @@
         .session-card label {
             font-weight: bold;
             font-size: 0.95rem;
-            color: var(--brand-dark);
+            color: var(--brand-purple-dark);
             font-family: 'Century Gothic', sans-serif;
         }
 
@@ -291,13 +292,13 @@
             color: #FFFFFF;
         }
 
-        /* Post-it Lateral em Rosa Vibrante com Detalhes Pretos */
+        /* Post-it Lateral em Rosa Vibrante */
         .post-it {
             background-color: var(--brand-pink);
             color: var(--brand-dark);
             padding: 30px;
             border-radius: 14px;
-            box-shadow: 0 10px 25px rgba(26, 26, 26, 0.12);
+            box-shadow: 0 10px 25px rgba(80, 32, 100, 0.12);
             position: sticky;
             top: 40px;
             height: fit-content;
@@ -306,8 +307,8 @@
         .post-it h3 {
             margin-top: 0;
             font-size: 2.2rem;
-            color: var(--brand-dark);
-            border-bottom: 2px solid var(--brand-dark);
+            color: var(--brand-purple-dark);
+            border-bottom: 2px solid rgba(80, 32, 100, 0.2);
             padding-bottom: 12px;
             text-align: center;
         }
@@ -324,6 +325,7 @@
             padding: 10px 12px;
             border-radius: 8px;
             transition: background 0.2s;
+            color: var(--brand-dark);
         }
 
         .topic-item:hover {
@@ -351,7 +353,7 @@
         .add-topic-box input {
             flex: 1;
             padding: 10px;
-            border: 1px solid var(--brand-dark);
+            border: 1px solid rgba(80, 32, 100, 0.3);
             border-radius: 8px;
             font-family: 'Century Gothic', sans-serif;
             background: #FFFFFF;
@@ -481,7 +483,7 @@
             </div>
             <div class="add-topic-box">
                 <input type="text" id="new-topic-input" placeholder="New topic...">
-                <button class="btn" onclick="addTopic()" style="padding: 10px 16px; background-color: var(--brand-dark);">+</button>
+                <button class="btn" onclick="addTopic()" style="padding: 10px 16px; background-color: var(--brand-purple-dark);">+</button>
             </div>
         </aside>
     </div>
