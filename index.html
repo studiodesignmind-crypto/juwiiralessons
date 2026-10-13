@@ -25,12 +25,12 @@
             --brand-lavender: #D8B4D9;
             --brand-pink: #F48FB1;
             
-            /* Paleta Nude / Rose Elegante sem "bege sobre bege" */
-            --bg-main: #feeaff;
+            /* Paleta Nude / Rose Elegante */
+            --bg-main: #F4EBEB;
             --card-bg: #FFFDFD;
             --input-bg: #F9F2F2;
             --text-dark: #1A1A1A;
-            --border-color: #ce9dd0;
+            --border-color: #E2D2D2;
         }
 
         body {
@@ -74,6 +74,45 @@
             font-weight: normal;
         }
 
+        /* Barra de Ferramentas de Formatação Estilizada */
+        .format-toolbar {
+            display: flex;
+            gap: 8px;
+            background: var(--card-bg);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(80, 32, 100, 0.03);
+        }
+
+        .format-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--brand-purple-dark);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Century Gothic', sans-serif;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .format-btn:hover {
+            background: var(--brand-purple-dark);
+            color: #FFFFFF;
+            border-color: var(--brand-purple-dark);
+        }
+
+        .format-toolbar span {
+            font-size: 0.8rem;
+            color: #777;
+            margin-left: 8px;
+            font-style: italic;
+        }
+
         /* Cabeçalho do Aluno */
         .student-header {
             background: var(--card-bg);
@@ -105,7 +144,7 @@
             font-family: 'Century Gothic', sans-serif;
         }
 
-        .clean-field input {
+        .clean-field input, .clean-field a {
             border: none;
             border-bottom: 2px solid var(--border-color);
             background: transparent;
@@ -115,6 +154,7 @@
             width: 100%;
             outline: none;
             padding: 4px 2px;
+            text-decoration: none;
             transition: border-color 0.3s;
         }
 
@@ -122,7 +162,18 @@
             border-bottom-color: var(--brand-red);
         }
 
-        /* Abas Retráteis (Roxo elegante com transição para vermelho no hover) */
+        .clean-field a {
+            color: var(--brand-purple-mid);
+            font-weight: 600;
+            border-bottom: 2px solid var(--brand-lavender);
+        }
+
+        .clean-field a:hover {
+            color: var(--brand-red);
+            border-bottom-color: var(--brand-red);
+        }
+
+        /* Abas Retráteis */
         .accordion {
             background: var(--card-bg);
             border-radius: 16px;
@@ -292,7 +343,7 @@
             color: #FFFFFF;
         }
 
-        /* Post-it Lateral em Rosa Vibrante */
+        /* Post-it Lateral */
         .post-it {
             background-color: var(--brand-pink);
             color: var(--brand-dark);
@@ -399,8 +450,20 @@
                 </div>
                 <div class="clean-field full-width">
                     <label>Call link:</label>
-                    <input type="text" id="field-link" placeholder="https://zoom.us/...">
+                    <input type="text" id="field-link" placeholder="Paste link here (e.g. https://zoom.us/...)">
                 </div>
+                <div class="clean-field full-width">
+                    <label>Access link:</label>
+                    <a id="display-link" href="#" target="_blank">No link provided yet</a>
+                </div>
+            </div>
+
+            <!-- Barra de Ferramentas Global de Formatação -->
+            <div class="format-toolbar">
+                <button class="format-btn" onclick="formatText('bold')"><b>B</b> Negrito</button>
+                <button class="format-btn" onclick="formatText('italic')"><i>I</i> Itálico</button>
+                <button class="format-btn" onclick="formatText('insertUnorderedList')">• Lista com Bullets</button>
+                <span>*Selecione o texto em qualquer caixa de texto abaixo para formatar</span>
             </div>
 
             <!-- Aba 1: Placement Chat -->
@@ -509,6 +572,35 @@
             accordion.classList.toggle('active');
         }
 
+        // Função para aplicar formatação (Negrito, Itálico, Bullet Points)
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            saveData();
+        }
+
+        // Atualiza dinamicamente o link clicável ao digitar no input de link
+        function updateLinkDisplay(url) {
+            const linkElement = document.getElementById('display-link');
+            if (url && url.trim() !== '') {
+                let formattedUrl = url.trim();
+                if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
+                    formattedUrl = 'https://' + formattedUrl;
+                }
+                linkElement.href = formattedUrl;
+                linkElement.innerText = formattedUrl;
+                linkElement.style.fontStyle = 'normal';
+            } else {
+                linkElement.href = '#';
+                linkElement.innerText = 'No link provided yet';
+                linkElement.style.fontStyle = 'italic';
+            }
+        }
+
+        document.getElementById('field-link').addEventListener('input', (e) => {
+            updateLinkDisplay(e.target.value);
+            saveData();
+        });
+
         let isSaving = false;
         let saveTimeout = null;
 
@@ -525,16 +617,16 @@
                     end: document.getElementById('field-end').value,
                     link: document.getElementById('field-link').value,
                     
-                    chatGoals: document.getElementById('chat-goals').innerText,
-                    chatConcerned: document.getElementById('chat-concerned').innerText,
-                    chatInteraction: document.getElementById('chat-interaction').innerText,
-                    chatWorks: document.getElementById('chat-works').innerText,
-                    chatObservations: document.getElementById('chat-observations').innerText,
+                    chatGoals: document.getElementById('chat-goals').innerHTML,
+                    chatConcerned: document.getElementById('chat-concerned').innerHTML,
+                    chatInteraction: document.getElementById('chat-interaction').innerHTML,
+                    chatWorks: document.getElementById('chat-works').innerHTML,
+                    chatObservations: document.getElementById('chat-observations').innerHTML,
 
-                    planNow: document.getElementById('plan-now').innerText,
-                    planWork: document.getElementById('plan-work').innerText,
-                    planAfter: document.getElementById('plan-after').innerText,
-                    planNext: document.getElementById('plan-next').innerText,
+                    planNow: document.getElementById('plan-now').innerHTML,
+                    planWork: document.getElementById('plan-work').innerHTML,
+                    planAfter: document.getElementById('plan-after').innerHTML,
+                    planNext: document.getElementById('plan-next').innerHTML,
 
                     cards: getCardsData(),
                     topics: getTopicsData()
@@ -554,9 +646,9 @@
             document.querySelectorAll('.session-card').forEach(card => {
                 cards.push({
                     topic: card.querySelector('.card-topic').value,
-                    covered: card.querySelector('.card-covered').value,
-                    teacherNotes: card.querySelector('.card-teacher').value,
-                    studentNotes: card.querySelector('.card-student').value
+                    covered: card.querySelector('.card-covered').innerHTML,
+                    teacherNotes: card.querySelector('.card-teacher').innerHTML,
+                    studentNotes: card.querySelector('.card-student').innerHTML
                 });
             });
             return cards;
@@ -587,17 +679,17 @@
                     <input type="text" class="card-topic" value="${c.topic || ''}" placeholder="e.g. 15/10 - Past Perfect">
                     
                     <label>Covered in session:</label>
-                    <textarea class="card-covered" placeholder="Topics and exercises covered...">${c.covered || ''}</textarea>
+                    <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.covered || ''}</div>
                     
                     <label>Teacher notes:</label>
-                    <textarea class="card-teacher" placeholder="Observations for the teacher...">${c.teacherNotes || ''}</textarea>
+                    <div class="card-teacher" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.teacherNotes || ''}</div>
                     
                     <label>Student notes (optional):</label>
-                    <textarea class="card-student" placeholder="Student notes...">${c.studentNotes || ''}</textarea>
+                    <div class="card-student" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.studentNotes || ''}</div>
                     
                     <button class="btn btn-delete" onclick="removeCard(this)">Delete Session</button>
                 `;
-                div.querySelectorAll('input, textarea').forEach(el => {
+                div.querySelectorAll('[contenteditable="true"], input').forEach(el => {
                     el.addEventListener('input', saveData);
                 });
                 wrapper.appendChild(div);
@@ -613,17 +705,17 @@
                 <input type="text" class="card-topic" placeholder="e.g. 15/10 - Past Perfect">
                 
                 <label>Covered in session:</label>
-                <textarea class="card-covered" placeholder="Topics and exercises covered..."></textarea>
+                <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;"></div>
                 
                 <label>Teacher notes:</label>
-                <textarea class="card-teacher" placeholder="Observations for the teacher..."></textarea>
+                <div class="card-teacher" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;"></div>
                 
                 <label>Student notes (optional):</label>
-                <textarea class="card-student" placeholder="Student notes..."></textarea>
+                <div class="card-student" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;"></div>
                 
                 <button class="btn btn-delete" onclick="removeCard(this)">Delete Session</button>
             `;
-            div.querySelectorAll('input, textarea').forEach(el => {
+            div.querySelectorAll('[contenteditable="true"], input').forEach(el => {
                 el.addEventListener('input', saveData);
             });
             wrapper.appendChild(div);
@@ -682,25 +774,29 @@
                 if (document.activeElement !== document.getElementById('field-datetime')) document.getElementById('field-datetime').value = data.datetime || '';
                 if (document.activeElement !== document.getElementById('field-start')) document.getElementById('field-start').value = data.start || '';
                 if (document.activeElement !== document.getElementById('field-end')) document.getElementById('field-end').value = data.end || '';
-                if (document.activeElement !== document.getElementById('field-link')) document.getElementById('field-link').value = data.link || '';
+                
+                if (document.activeElement !== document.getElementById('field-link')) {
+                    document.getElementById('field-link').value = data.link || '';
+                    updateLinkDisplay(data.link || '');
+                }
 
-                if (document.activeElement !== document.getElementById('chat-goals')) document.getElementById('chat-goals').innerText = data.chatGoals || '';
-                if (document.activeElement !== document.getElementById('chat-concerned')) document.getElementById('chat-concerned').innerText = data.chatConcerned || '';
-                if (document.activeElement !== document.getElementById('chat-interaction')) document.getElementById('chat-interaction').innerText = data.chatInteraction || '';
-                if (document.activeElement !== document.getElementById('chat-works')) document.getElementById('chat-works').innerText = data.chatWorks || '';
-                if (document.activeElement !== document.getElementById('chat-observations')) document.getElementById('chat-observations').innerText = data.chatObservations || '';
+                if (document.activeElement !== document.getElementById('chat-goals')) document.getElementById('chat-goals').innerHTML = data.chatGoals || '';
+                if (document.activeElement !== document.getElementById('chat-concerned')) document.getElementById('chat-concerned').innerHTML = data.chatConcerned || '';
+                if (document.activeElement !== document.getElementById('chat-interaction')) document.getElementById('chat-interaction').innerHTML = data.chatInteraction || '';
+                if (document.activeElement !== document.getElementById('chat-works')) document.getElementById('chat-works').innerHTML = data.chatWorks || '';
+                if (document.activeElement !== document.getElementById('chat-observations')) document.getElementById('chat-observations').innerHTML = data.chatObservations || '';
 
-                if (document.activeElement !== document.getElementById('plan-now')) document.getElementById('plan-now').innerText = data.planNow || '';
-                if (document.activeElement !== document.getElementById('plan-work')) document.getElementById('plan-work').innerText = data.planWork || '';
-                if (document.activeElement !== document.getElementById('plan-after')) document.getElementById('plan-after').innerText = data.planAfter || '';
-                if (document.activeElement !== document.getElementById('plan-next')) document.getElementById('plan-next').innerText = data.planNext || '';
+                if (document.activeElement !== document.getElementById('plan-now')) document.getElementById('plan-now').innerHTML = data.planNow || '';
+                if (document.activeElement !== document.getElementById('plan-work')) document.getElementById('plan-work').innerHTML = data.planWork || '';
+                if (document.activeElement !== document.getElementById('plan-after')) document.getElementById('plan-after').innerHTML = data.planAfter || '';
+                if (document.activeElement !== document.getElementById('plan-next')) document.getElementById('plan-next').innerHTML = data.planNext || '';
 
                 if (data.cards) renderCards(data.cards);
                 if (data.topics) renderTopics(data.topics);
             }
         });
 
-        document.querySelectorAll('input, [contenteditable="true"]').forEach(el => {
+        document.querySelectorAll('input:not(#field-link), [contenteditable="true"]').forEach(el => {
             el.addEventListener('input', saveData);
         });
 
