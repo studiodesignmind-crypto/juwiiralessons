@@ -7,6 +7,11 @@
     <!-- Favicon com Emoji de Mão a Escrever -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✍️</text></svg>">
     
+    <!-- Google Fonts: Oleo Script (Fallback para Harlow Solid no Mobile) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700&display=swap" rel="stylesheet">
+
     <!-- Firebase SDKs (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -42,8 +47,9 @@
             min-height: 100vh;
         }
 
+        /* Preferência pela Harlow Solid com fallback gracioso para Oleo Script no Mobile */
         h1, h2, h3, .accordion-header, .side-card h3, .session-accordion-header {
-            font-family: 'Harlow Solid', 'Harlow Solid Italic', cursive;
+            font-family: 'Harlow Solid', 'Harlow Solid Italic', 'Oleo Script', cursive;
         }
 
         .main-container {
@@ -53,12 +59,6 @@
             grid-template-columns: 1fr 340px;
             gap: 30px;
             position: relative;
-        }
-
-        @media (max-width: 900px) {
-            .main-container {
-                grid-template-columns: 1fr;
-            }
         }
 
         .content-area {
@@ -82,7 +82,7 @@
             font-weight: normal;
         }
 
-        /* Barra de Ferramentas Flutuante Atualizada */
+        /* Barra de Ferramentas Flutuante */
         .toolbar-wrapper {
             position: fixed;
             bottom: 25px;
@@ -148,7 +148,6 @@
             color: var(--brand-red);
         }
 
-        /* Botões de Cores Visuais na Toolbar */
         .color-dot {
             width: 14px;
             height: 14px;
@@ -372,11 +371,19 @@
             color: #FFFFFF;
         }
 
+        /* Container de Rolagem para Tabelas em Mobile */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         /* Tabelas Compactadas */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 5px;
+            min-width: 500px; /* Garante usabilidade nas colunas pequenas no mobile */
         }
 
         th, td {
@@ -521,7 +528,7 @@
             color: #FFFFFF;
         }
 
-        /* Cards da Coluna Lateral (Post-it e Placement Chat) */
+        /* Cards da Coluna Lateral */
         .side-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -711,6 +718,72 @@
             text-align: center;
             padding: 8px 0;
         }
+
+        /* ==========================================================================
+           REGRAS DE RESPONSIVIDADE DEDICADAS PARA MOBILE (MAX-WIDTH: 900PX)
+           ========================================================================== */
+        @media (max-width: 900px) {
+            body {
+                padding: 16px 10px;
+            }
+
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            header h1 {
+                font-size: 2.2rem;
+            }
+
+            .student-header {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+
+            .student-header .full-width {
+                grid-column: span 1;
+            }
+
+            .clean-field {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+
+            .accordion-header {
+                font-size: 1.5rem;
+                padding: 12px 18px;
+            }
+
+            .accordion-content {
+                padding: 0 14px;
+            }
+
+            .accordion.active .accordion-content {
+                padding: 16px 14px 18px 14px;
+            }
+
+            .toolbar-wrapper {
+                bottom: 15px;
+                right: 15px;
+                left: 15px;
+                justify-content: flex-end;
+            }
+
+            .format-toolbar {
+                max-width: 100%;
+                justify-content: center;
+            }
+
+            .side-card {
+                padding: 16px;
+            }
+
+            .side-card-header {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -822,7 +895,7 @@
         </div>
     </div>
 
-    <!-- Barra de Ferramentas de Formatação Atualizada -->
+    <!-- Barra de Ferramentas de Formatação Flutuante -->
     <div class="toolbar-wrapper">
         <div class="format-toolbar" id="formatToolbar">
             <button class="format-btn" onclick="formatText('bold')" title="Negrito"><b>B</b></button>
@@ -909,7 +982,6 @@
         }
 
         function toggleList() {
-            const queryState = document.queryCommandState('insertUnorderedList');
             document.execCommand('insertUnorderedList', false, null);
             saveData();
         }
@@ -1037,24 +1109,26 @@
                 const content = document.createElement('div');
                 content.className = `tab-content ${index === activePlanIndex ? 'active' : ''}`;
                 content.innerHTML = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>What you can do now</th>
-                                <th>What we will work on</th>
-                                <th>What you will do after 4 weeks</th>
-                                <th>After 4 weeks, we can start working on:</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td contenteditable="true" class="plan-now">${p.now || ''}</td>
-                                <td contenteditable="true" class="plan-work">${p.work || ''}</td>
-                                <td contenteditable="true" class="plan-after">${p.after || ''}</td>
-                                <td contenteditable="true" class="plan-next">${p.next || ''}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>What you can do now</th>
+                                    <th>What we will work on</th>
+                                    <th>What you will do after 4 weeks</th>
+                                    <th>After 4 weeks, we can start working on:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td contenteditable="true" class="plan-now">${p.now || ''}</td>
+                                    <td contenteditable="true" class="plan-work">${p.work || ''}</td>
+                                    <td contenteditable="true" class="plan-after">${p.after || ''}</td>
+                                    <td contenteditable="true" class="plan-next">${p.next || ''}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 `;
                 content.querySelectorAll('[contenteditable="true"]').forEach(el => {
                     el.addEventListener('input', saveData);
@@ -1204,22 +1278,24 @@
                             <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.covered || ''}</div>
                             
                             <label>Teacher Notes:</label>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th style="width: 33.33%;">Grammar and Structure</th>
-                                        <th style="width: 33.33%;">Vocabulary</th>
-                                        <th style="width: 33.33%;">Pronunciation</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td contenteditable="true" class="card-grammar">${c.grammar || ''}</td>
-                                        <td contenteditable="true" class="card-vocab">${c.vocab || ''}</td>
-                                        <td contenteditable="true" class="card-pronunciation">${c.pronunciation || ''}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 33.33%;">Grammar and Structure</th>
+                                            <th style="width: 33.33%;">Vocabulary</th>
+                                            <th style="width: 33.33%;">Pronunciation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td contenteditable="true" class="card-grammar">${c.grammar || ''}</td>
+                                            <td contenteditable="true" class="card-vocab">${c.vocab || ''}</td>
+                                            <td contenteditable="true" class="card-pronunciation">${c.pronunciation || ''}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
                             <label>Observations:</label>
                             <div class="card-observations" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.observations || ''}</div>
@@ -1312,22 +1388,24 @@
                     <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;"></div>
                     
                     <label>Teacher Notes:</label>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 33.33%;">Grammar and Structure</th>
-                                <th style="width: 33.33%;">Vocabulary</th>
-                                <th style="width: 33.33%;">Pronunciation</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td contenteditable="true" class="card-grammar"></td>
-                                <td contenteditable="true" class="card-vocab"></td>
-                                <td contenteditable="true" class="card-pronunciation"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 33.33%;">Grammar and Structure</th>
+                                    <th style="width: 33.33%;">Vocabulary</th>
+                                    <th style="width: 33.33%;">Pronunciation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td contenteditable="true" class="card-grammar"></td>
+                                    <td contenteditable="true" class="card-vocab"></td>
+                                    <td contenteditable="true" class="card-pronunciation"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
                     <label>Observations:</label>
                     <div class="card-observations" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;"></div>
