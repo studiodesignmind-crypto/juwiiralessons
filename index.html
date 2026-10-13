@@ -82,7 +82,7 @@
             font-weight: normal;
         }
 
-        /* Barra de Ferramentas Flutuante Completa */
+        /* Barra de Ferramentas Flutuante Atualizada */
         .toolbar-wrapper {
             position: fixed;
             bottom: 25px;
@@ -123,7 +123,7 @@
             gap: 6px;
             align-items: center;
             flex-wrap: wrap;
-            max-width: 520px;
+            max-width: 480px;
         }
 
         .format-toolbar.open {
@@ -146,6 +146,15 @@
         .format-btn:hover {
             background: var(--bg-main);
             color: var(--brand-red);
+        }
+
+        /* Botões de Cores Visuais na Toolbar */
+        .color-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 1px solid rgba(0,0,0,0.2);
         }
 
         .divider {
@@ -813,7 +822,7 @@
         </div>
     </div>
 
-    <!-- Barra de Ferramentas de Formatação Flutuante -->
+    <!-- Barra de Ferramentas de Formatação Atualizada -->
     <div class="toolbar-wrapper">
         <div class="format-toolbar" id="formatToolbar">
             <button class="format-btn" onclick="formatText('bold')" title="Negrito"><b>B</b></button>
@@ -823,15 +832,15 @@
             
             <div class="divider"></div>
             
-            <button class="format-btn" onclick="applyHighlight()" title="Marca-texto (Highlight)" style="background: var(--brand-pink); border-radius: 4px;">Highlight</button>
-            <button class="format-btn" onclick="removeHighlight()" title="Remover Highlight" style="border: 1px solid var(--border-color); border-radius: 4px;">Clear Highlight</button>
-            <button class="format-btn" onclick="toggleTextColor()" title="Mudar cor do texto" style="color: var(--brand-red);">Red Text</button>
+            <button class="format-btn" onclick="toggleHighlight()" title="Highlight (Alternar)" style="background: var(--brand-pink); border-radius: 4px;">Highlight</button>
+            <button class="format-btn" onclick="setTextColor('#6B0F1A')" title="Texto Vermelho"><span class="color-dot" style="background: #6B0F1A;"></span></button>
+            <button class="format-btn" onclick="setTextColor('#502064')" title="Texto Roxo"><span class="color-dot" style="background: #502064;"></span></button>
+            <button class="format-btn" onclick="setTextColor('#1A1A1A')" title="Texto Preto (Normal)"><span class="color-dot" style="background: #1A1A1A;"></span></button>
             
             <div class="divider"></div>
 
-            <button class="format-btn" onclick="formatText('insertUnorderedList')" title="Bullet Point">• Bullet</button>
-            <button class="format-btn" onclick="formatText('indent')" title="Criar Sub-bullet (Recuar)">→ Sub</button>
-            <button class="format-btn" onclick="formatText('outdent')" title="Voltar nível">← Voltar</button>
+            <button class="format-btn" onclick="toggleList()" title="Bullet Point (Alternar)">• Bullet</button>
+            <button class="format-btn" onclick="toggleIndent()" title="Sub-bullet / Recuo (Alternar)">→ Sub</button>
         </div>
         <button class="toolbar-toggle-btn" onclick="toggleFormatToolbar()">✍️ Format</button>
     </div>
@@ -883,21 +892,35 @@
             saveData();
         }
 
-        function applyHighlight() {
-            document.execCommand('hiliteColor', false, '#F48FB1');
+        /* Toggles Inteligentes para Formatação */
+        function toggleHighlight() {
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+            const parentElement = selection.getRangeAt(0).commonAncestorContainer.parentElement;
+            const isHighlighted = parentElement.style.backgroundColor === 'rgb(244, 143, 177)' || parentElement.style.backgroundColor === '#F48FB1';
+            
+            document.execCommand('hiliteColor', false, isHighlighted ? 'transparent' : '#F48FB1');
             saveData();
         }
 
-        function removeHighlight() {
-            document.execCommand('hiliteColor', false, 'transparent');
-            saveData();
-        }
-
-        let isRed = false;
-        function toggleTextColor() {
-            const color = isRed ? '#502064' : '#6B0F1A';
+        function setTextColor(color) {
             document.execCommand('foreColor', false, color);
-            isRed = !isRed;
+            saveData();
+        }
+
+        function toggleList() {
+            const queryState = document.queryCommandState('insertUnorderedList');
+            document.execCommand('insertUnorderedList', false, null);
+            saveData();
+        }
+
+        function toggleIndent() {
+            const queryState = document.queryCommandState('indent');
+            if (queryState) {
+                document.execCommand('outdent', false, null);
+            } else {
+                document.execCommand('indent', false, null);
+            }
             saveData();
         }
 
@@ -1085,7 +1108,7 @@
             saveData();
         }
 
-        /* Gestão de Session & Lesson Logs (Com Tabela de 3 Colunas + Observations + For Next Session) */
+        /* Gestão de Session & Lesson Logs */
         let activeSessionMonthIndex = 0;
 
         function getSessionMonthsData() {
@@ -1180,7 +1203,6 @@
                             <label>Covered in session:</label>
                             <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.covered || ''}</div>
                             
-                            <!-- Tabela de Teacher Notes em 3 Colunas -->
                             <label>Teacher Notes:</label>
                             <table>
                                 <thead>
@@ -1199,11 +1221,9 @@
                                 </tbody>
                             </table>
 
-                            <!-- Campo Livre: Observations -->
                             <label>Observations:</label>
                             <div class="card-observations" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.observations || ''}</div>
 
-                            <!-- Seção Separada: For Next Session -->
                             <label>For next session:</label>
                             <div class="card-next-session" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.nextSession || ''}</div>
 
