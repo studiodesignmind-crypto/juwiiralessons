@@ -267,8 +267,8 @@
             padding: 25px 30px 30px 30px;
         }
 
-        /* Estrutura de Abas Horizontais para o 4 Week Plan */
-        .plan-tabs-header {
+        /* Estrutura de Abas Horizontais (Geral para Plan e Session Log) */
+        .tabs-header {
             display: flex;
             gap: 8px;
             border-bottom: 2px solid var(--border-color);
@@ -277,7 +277,7 @@
             padding-bottom: 4px;
         }
 
-        .plan-tab-btn {
+        .tab-btn {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             border-bottom: none;
@@ -292,25 +292,25 @@
             white-space: nowrap;
         }
 
-        .plan-tab-btn:hover {
+        .tab-btn:hover {
             background: var(--brand-lavender);
         }
 
-        .plan-tab-btn.active {
+        .tab-btn.active {
             background: var(--brand-purple-dark);
             color: #FFFFFF;
             border-color: var(--brand-purple-dark);
         }
 
-        .plan-tab-content {
+        .tab-content {
             display: none;
         }
 
-        .plan-tab-content.active {
+        .tab-content.active {
             display: block;
         }
 
-        .add-plan-btn {
+        .add-tab-btn {
             background: transparent;
             border: 1px dashed var(--brand-purple-dark);
             color: var(--brand-purple-dark);
@@ -323,7 +323,7 @@
             transition: all 0.2s;
         }
 
-        .add-plan-btn:hover {
+        .add-tab-btn:hover {
             background: var(--brand-purple-dark);
             color: #FFFFFF;
         }
@@ -683,7 +683,7 @@
             <div class="accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">4 Week Plan</div>
                 <div class="accordion-content">
-                    <div class="plan-tabs-header" id="planTabsHeader">
+                    <div class="tabs-header" id="planTabsHeader">
                         <!-- Botões de abas gerados dinamicamente -->
                     </div>
                     <div id="planTabsContainer">
@@ -692,14 +692,16 @@
                 </div>
             </div>
 
-            <!-- Aba 3: Session & Lesson Log -->
+            <!-- Aba 3: Session & Lesson Log (Com Abas por Mês) -->
             <div class="accordion active" id="session-accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">Session & Lesson Log</div>
                 <div class="accordion-content">
-                    <div id="cards-wrapper" class="cards-container">
-                        <!-- Cards das aulas gerados dinamicamente -->
+                    <div class="tabs-header" id="sessionTabsHeader">
+                        <!-- Botões de abas do log gerados dinamicamente -->
                     </div>
-                    <button class="btn" onclick="addCard()" style="margin-top: 25px;">Adicionar Sessão</button>
+                    <div id="sessionTabsContainer">
+                        <!-- Conteúdo de cada mês de aulas gerado dinamicamente -->
+                    </div>
                 </div>
             </div>
 
@@ -851,7 +853,7 @@
                     chatObservations: document.getElementById('chat-observations').innerHTML || '',
 
                     plans: getPlansData(),
-                    cards: getCardsData(),
+                    sessionMonths: getSessionMonthsData(),
                     topics: getTopicsData()
                 };
 
@@ -869,9 +871,9 @@
 
         function getPlansData() {
             const plans = [];
-            document.querySelectorAll('.plan-tab-content').forEach((content, index) => {
+            document.querySelectorAll('#planTabsContainer .tab-content').forEach((content, index) => {
                 plans.push({
-                    title: document.querySelectorAll('.plan-tab-btn')[index].innerText,
+                    title: document.querySelectorAll('#planTabsHeader .tab-btn')[index].innerText,
                     now: content.querySelector('.plan-now').innerHTML || '',
                     work: content.querySelector('.plan-work').innerHTML || '',
                     after: content.querySelector('.plan-after').innerHTML || '',
@@ -893,16 +895,14 @@
             }
 
             plans.forEach((p, index) => {
-                // Criar Botão da Aba
                 const btn = document.createElement('button');
-                btn.className = `plan-tab-btn ${index === activePlanIndex ? 'active' : ''}`;
+                btn.className = `tab-btn ${index === activePlanIndex ? 'active' : ''}`;
                 btn.innerText = p.title || `Cycle ${index + 1}`;
                 btn.onclick = () => switchPlanTab(index);
                 headerWrapper.appendChild(btn);
 
-                // Criar Conteúdo da Tabela
                 const content = document.createElement('div');
-                content.className = `plan-tab-content ${index === activePlanIndex ? 'active' : ''}`;
+                content.className = `tab-content ${index === activePlanIndex ? 'active' : ''}`;
                 content.innerHTML = `
                     <table>
                         <thead>
@@ -930,9 +930,8 @@
                 containerWrapper.appendChild(content);
             });
 
-            // Botão Adicionar Novo Ciclo
             const addBtn = document.createElement('button');
-            addBtn.className = 'add-plan-btn';
+            addBtn.className = 'add-tab-btn';
             addBtn.innerText = '+ New 4-Week Cycle';
             addBtn.onclick = addNewPlanCycle;
             headerWrapper.appendChild(addBtn);
@@ -940,12 +939,10 @@
 
         function switchPlanTab(index) {
             activePlanIndex = index;
-            document.querySelectorAll('.plan-tab-btn').forEach((btn, i) => {
-                if (i < document.querySelectorAll('.plan-tab-content').length) {
-                    btn.classList.toggle('active', i === index);
-                }
+            document.querySelectorAll('#planTabsHeader .tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
             });
-            document.querySelectorAll('.plan-tab-content').forEach((c, i) => {
+            document.querySelectorAll('#planTabsContainer .tab-content').forEach((c, i) => {
                 c.classList.toggle('active', i === index);
             });
         }
@@ -966,96 +963,138 @@
             saveData();
         }
 
-        function getCardsData() {
-            const cards = [];
-            document.querySelectorAll('.session-card-accordion').forEach(card => {
-                cards.push({
-                    date: card.querySelector('.card-date').value || '',
-                    topic: card.querySelector('.card-topic').value || '',
-                    covered: card.querySelector('.card-covered').innerHTML || '',
-                    teacherNotes: card.querySelector('.card-teacher').innerHTML || '',
-                    studentNotes: card.querySelector('.card-student').innerHTML || '',
-                    isOpen: card.classList.contains('open')
+        /* Gestão de Session & Lesson Logs (Abas por Mês) */
+        let activeSessionMonthIndex = 0;
+
+        function getSessionMonthsData() {
+            const months = [];
+            document.querySelectorAll('#sessionTabsContainer .tab-content').forEach((monthContent, mIndex) => {
+                const cards = [];
+                monthContent.querySelectorAll('.session-card-accordion').forEach(card => {
+                    cards.push({
+                        date: card.querySelector('.card-date').value || '',
+                        topic: card.querySelector('.card-topic').value || '',
+                        covered: card.querySelector('.card-covered').innerHTML || '',
+                        teacherNotes: card.querySelector('.card-teacher').innerHTML || '',
+                        studentNotes: card.querySelector('.card-student').innerHTML || '',
+                        isOpen: card.classList.contains('open')
+                    });
+                });
+                months.push({
+                    title: document.querySelectorAll('#sessionTabsHeader .tab-btn')[mIndex].innerText,
+                    cards: cards
                 });
             });
-            return cards;
+            return months;
         }
 
-        function getTopicsData() {
-            const topics = [];
-            document.querySelectorAll('.topic-item').forEach(item => {
-                topics.push({
-                    text: item.querySelector('span').innerText || '',
-                    completed: item.querySelector('input').checked || false
-                });
-            });
-            return topics;
-        }
+        function renderSessionMonths(months = []) {
+            const headerWrapper = document.getElementById('sessionTabsHeader');
+            const containerWrapper = document.getElementById('sessionTabsContainer');
 
-        function renderCards(cards = []) {
-            const wrapper = document.getElementById('cards-wrapper');
-            wrapper.innerHTML = '';
-            if (cards.length === 0) {
-                cards = [{date: '', topic: '', covered: '', teacherNotes: '', studentNotes: '', isOpen: true}];
+            headerWrapper.innerHTML = '';
+            containerWrapper.innerHTML = '';
+
+            if (months.length === 0) {
+                months = [{ title: 'Month 1', cards: [{date: '', topic: '', covered: '', teacherNotes: '', studentNotes: '', isOpen: true}] }];
             }
-            cards.forEach((c, index) => {
-                const div = document.createElement('div');
-                const isOpen = c.isOpen !== undefined ? c.isOpen : (index === 0);
-                div.className = `session-card-accordion ${isOpen ? 'open' : ''}`;
-                
-                const titleText = (c.date || c.topic) ? `${c.date ? formatDate(c.date) : ''} ${c.topic ? '— ' + c.topic : ''}` : `New Session`;
 
-                div.innerHTML = `
-                    <div class="session-accordion-header" onclick="toggleSessionAccordion(this)">
-                        <span class="card-title-text">${titleText}</span>
-                    </div>
-                    <div class="session-accordion-body">
-                        <label>Session Date:</label>
-                        <input type="date" class="card-date" value="${c.date || ''}" onchange="updateCardHeader(this)">
-                        
-                        <label>Topic:</label>
-                        <input type="text" class="card-topic" value="${c.topic || ''}" placeholder="e.g. Past Perfect" oninput="updateCardHeader(this)">
-                        
-                        <label>Covered in session:</label>
-                        <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.covered || ''}</div>
-                        
-                        <label>Teacher notes:</label>
-                        <div class="card-teacher" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.teacherNotes || ''}</div>
-                        
-                        <label>Student notes (optional):</label>
-                        <div class="card-student" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.studentNotes || ''}</div>
-                        
-                        <button class="btn btn-delete" onclick="removeCard(this)">Delete Session</button>
-                    </div>
-                `;
-                div.querySelectorAll('[contenteditable="true"], input').forEach(el => {
-                    el.addEventListener('input', saveData);
-                    el.addEventListener('blur', saveData);
+            months.forEach((m, mIndex) => {
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${mIndex === activeSessionMonthIndex ? 'active' : ''}`;
+                btn.innerText = m.title || `Month ${mIndex + 1}`;
+                btn.onclick = () => switchSessionMonthTab(mIndex);
+                headerWrapper.appendChild(btn);
+
+                const content = document.createElement('div');
+                content.className = `tab-content ${mIndex === activeSessionMonthIndex ? 'active' : ''}`;
+                
+                const cardsContainer = document.createElement('div');
+                cardsContainer.className = 'cards-container';
+
+                if (!m.cards || m.cards.length === 0) {
+                    m.cards = [{date: '', topic: '', covered: '', teacherNotes: '', studentNotes: '', isOpen: true}];
+                }
+
+                m.cards.forEach((c, index) => {
+                    const cardDiv = document.createElement('div');
+                    const isOpen = c.isOpen !== undefined ? c.isOpen : (index === 0);
+                    cardDiv.className = `session-card-accordion ${isOpen ? 'open' : ''}`;
+                    
+                    const titleText = (c.date || c.topic) ? `${c.date ? formatDate(c.date) : ''} ${c.topic ? '— ' + c.topic : ''}` : `New Session`;
+
+                    cardDiv.innerHTML = `
+                        <div class="session-accordion-header" onclick="toggleSessionAccordion(this)">
+                            <span class="card-title-text">${titleText}</span>
+                        </div>
+                        <div class="session-accordion-body">
+                            <label>Session Date:</label>
+                            <input type="date" class="card-date" value="${c.date || ''}" onchange="updateCardHeader(this)">
+                            
+                            <label>Topic:</label>
+                            <input type="text" class="card-topic" value="${c.topic || ''}" placeholder="e.g. Past Perfect" oninput="updateCardHeader(this)">
+                            
+                            <label>Covered in session:</label>
+                            <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.covered || ''}</div>
+                            
+                            <label>Teacher notes:</label>
+                            <div class="card-teacher" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.teacherNotes || ''}</div>
+                            
+                            <label>Student notes (optional):</label>
+                            <div class="card-student" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.studentNotes || ''}</div>
+                            
+                            <button class="btn btn-delete" onclick="removeCard(this)">Delete Session</button>
+                        </div>
+                    `;
+                    cardDiv.querySelectorAll('[contenteditable="true"], input').forEach(el => {
+                        el.addEventListener('input', saveData);
+                        el.addEventListener('blur', saveData);
+                    });
+                    cardsContainer.appendChild(cardDiv);
                 });
-                wrapper.appendChild(div);
+
+                content.appendChild(cardsContainer);
+
+                const addCardBtn = document.createElement('button');
+                addCardBtn.className = 'btn';
+                addCardBtn.style.marginTop = '20px';
+                addCardBtn.innerText = 'Adicionar Sessão';
+                addCardBtn.onclick = () => addCardToCurrentMonth(cardsContainer);
+                content.appendChild(addCardBtn);
+
+                containerWrapper.appendChild(content);
+            });
+
+            const addMonthBtn = document.createElement('button');
+            addMonthBtn.className = 'add-tab-btn';
+            addMonthBtn.innerText = '+ New Month Log';
+            addMonthBtn.onclick = addNewSessionMonth;
+            headerWrapper.appendChild(addMonthBtn);
+        }
+
+        function switchSessionMonthTab(index) {
+            activeSessionMonthIndex = index;
+            document.querySelectorAll('#sessionTabsHeader .tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('#sessionTabsContainer .tab-content').forEach((c, i) => {
+                c.classList.toggle('active', i === index);
             });
         }
 
-        function formatDate(dateStr) {
-            if (!dateStr) return '';
-            const parts = dateStr.split('-');
-            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            return dateStr;
+        function addNewSessionMonth() {
+            const months = getSessionMonthsData();
+            months.push({
+                title: `Month ${months.length + 1}`,
+                cards: [{date: '', topic: '', covered: '', teacherNotes: '', studentNotes: '', isOpen: true}]
+            });
+            activeSessionMonthIndex = months.length - 1;
+            renderSessionMonths(months);
+            saveData();
         }
 
-        function updateCardHeader(input) {
-            const card = input.closest('.session-card-accordion');
-            const dateVal = card.querySelector('.card-date').value;
-            const topicVal = card.querySelector('.card-topic').value;
-            const titleSpan = card.querySelector('.card-title-text');
-            
-            const titleText = (dateVal || topicVal) ? `${dateVal ? formatDate(dateVal) : ''} ${topicVal ? '— ' + topicVal : ''}` : `New Session`;
-            titleSpan.innerText = titleText;
-        }
-
-        function addCard() {
-            const wrapper = document.getElementById('cards-wrapper');
-            document.querySelectorAll('.session-card-accordion').forEach(c => c.classList.remove('open'));
+        function addCardToCurrentMonth(wrapper) {
+            wrapper.querySelectorAll('.session-card-accordion').forEach(c => c.classList.remove('open'));
 
             const div = document.createElement('div');
             div.className = 'session-card-accordion open';
@@ -1090,9 +1129,37 @@
             saveData();
         }
 
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return dateStr;
+        }
+
+        function updateCardHeader(input) {
+            const card = input.closest('.session-card-accordion');
+            const dateVal = card.querySelector('.card-date').value;
+            const topicVal = card.querySelector('.card-topic').value;
+            const titleSpan = card.querySelector('.card-title-text');
+            
+            const titleText = (dateVal || topicVal) ? `${dateVal ? formatDate(dateVal) : ''} ${topicVal ? '— ' + topicVal : ''}` : `New Session`;
+            titleSpan.innerText = titleText;
+        }
+
         function removeCard(btn) {
             btn.closest('.session-card-accordion').remove();
             saveData();
+        }
+
+        function getTopicsData() {
+            const topics = [];
+            document.querySelectorAll('.topic-item').forEach(item => {
+                topics.push({
+                    text: item.querySelector('span').innerText || '',
+                    completed: item.querySelector('input').checked || false
+                });
+            });
+            return topics;
         }
 
         function renderTopics(topics = []) {
@@ -1193,13 +1260,12 @@
                 if (activeEl !== document.getElementById('chat-works')) document.getElementById('chat-works').innerHTML = data.chatWorks || '';
                 if (activeEl !== document.getElementById('chat-observations')) document.getElementById('chat-observations').innerHTML = data.chatObservations || '';
 
-                if (!activeEl.closest('.plan-tab-content')) {
+                if (!activeEl.closest('#planTabsContainer')) {
                     renderPlans(data.plans || []);
                 }
 
-                const editingCard = activeEl && activeEl.closest('.session-card-accordion');
-                if (!editingCard && data.cards) {
-                    renderCards(data.cards);
+                if (!activeEl.closest('#sessionTabsContainer')) {
+                    renderSessionMonths(data.sessionMonths || []);
                 }
                 
                 if (data.topics && !document.activeElement.closest('.post-it')) {
@@ -1209,7 +1275,7 @@
                 document.getElementById('sync-status').innerText = "All changes saved";
             } else {
                 renderPlans([]);
-                renderCards();
+                renderSessionMonths([]);
                 renderTopics([]);
             }
         }, (error) => {
