@@ -267,7 +267,7 @@
             padding: 25px 30px 30px 30px;
         }
 
-        /* Estrutura de Abas Horizontais (Geral para Plan e Session Log) */
+        /* Estrutura de Abas Horizontais com Botão de Exclusão (×) */
         .tabs-header {
             display: flex;
             gap: 8px;
@@ -275,31 +275,58 @@
             margin-bottom: 20px;
             overflow-x: auto;
             padding-bottom: 4px;
+            align-items: center;
         }
 
-        .tab-btn {
+        .tab-item {
+            display: flex;
+            align-items: center;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             border-bottom: none;
-            padding: 8px 16px;
             border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 12px 8px 16px;
             cursor: pointer;
             font-family: 'Century Gothic', sans-serif;
             font-weight: bold;
             font-size: 0.9rem;
             color: var(--brand-purple-dark);
-            transition: all 0.2s;
             white-space: nowrap;
         }
 
-        .tab-btn:hover {
-            background: var(--brand-lavender);
+        .tab-item.active {
+            background: var(--brand-purple-dark);
+            border-color: var(--brand-purple-dark);
         }
 
-        .tab-btn.active {
-            background: var(--brand-purple-dark);
+        .tab-item.active .tab-btn {
             color: #FFFFFF;
-            border-color: var(--brand-purple-dark);
+        }
+
+        .delete-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--brand-red);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 10px 0 2px;
+            transition: opacity 0.2s;
+        }
+
+        .tab-item.active .delete-tab-btn {
+            color: #FFB4B4;
+        }
+
+        .delete-tab-btn:hover {
+            opacity: 0.7;
         }
 
         .tab-content {
@@ -314,13 +341,14 @@
             background: transparent;
             border: 1px dashed var(--brand-purple-dark);
             color: var(--brand-purple-dark);
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 8px 8px 0 0;
             cursor: pointer;
             font-family: 'Century Gothic', sans-serif;
             font-weight: bold;
             font-size: 0.85rem;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .add-tab-btn:hover {
@@ -679,28 +707,28 @@
                 </div>
             </div>
 
-            <!-- Aba 2: 4 Week Plan (Abas por Mês) -->
+            <!-- Aba 2: 4 Week Plan (Abas com Exclusão) -->
             <div class="accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">4 Week Plan</div>
                 <div class="accordion-content">
                     <div class="tabs-header" id="planTabsHeader">
-                        <!-- Botões de abas gerados dinamicamente -->
+                        <!-- Abas e botão de adicionar gerados dinamicamente -->
                     </div>
                     <div id="planTabsContainer">
-                        <!-- Conteúdo de cada tabela gerado dinamicamente -->
+                        <!-- Conteúdo gerado dinamicamente -->
                     </div>
                 </div>
             </div>
 
-            <!-- Aba 3: Session & Lesson Log (Com Abas por Mês) -->
+            <!-- Aba 3: Session & Lesson Log (Abas com Exclusão) -->
             <div class="accordion active" id="session-accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">Session & Lesson Log</div>
                 <div class="accordion-content">
                     <div class="tabs-header" id="sessionTabsHeader">
-                        <!-- Botões de abas do log gerados dinamicamente -->
+                        <!-- Abas e botão de adicionar gerados dinamicamente -->
                     </div>
                     <div id="sessionTabsContainer">
-                        <!-- Conteúdo de cada mês de aulas gerado dinamicamente -->
+                        <!-- Conteúdo gerado dinamicamente -->
                     </div>
                 </div>
             </div>
@@ -866,7 +894,7 @@
             }, 600);
         }
 
-        /* Gestão de Planos de 4 Semanas (Abas Horizontais) */
+        /* Gestão de Planos de 4 Semanas (Com Exclusão de Aba) */
         let activePlanIndex = 0;
 
         function getPlansData() {
@@ -894,12 +922,32 @@
                 plans = [{ title: 'Cycle 1 (Weeks 1-4)', now: '', work: '', after: '', next: '' }];
             }
 
+            if (activePlanIndex >= plans.length) {
+                activePlanIndex = plans.length - 1;
+            }
+
             plans.forEach((p, index) => {
+                const item = document.createElement('div');
+                item.className = `tab-item ${index === activePlanIndex ? 'active' : ''}`;
+                
                 const btn = document.createElement('button');
-                btn.className = `tab-btn ${index === activePlanIndex ? 'active' : ''}`;
+                btn.className = 'tab-btn';
                 btn.innerText = p.title || `Cycle ${index + 1}`;
                 btn.onclick = () => switchPlanTab(index);
-                headerWrapper.appendChild(btn);
+                item.appendChild(btn);
+
+                // Botão de deletar aba (×)
+                const delBtn = document.createElement('button');
+                delBtn.className = 'delete-tab-btn';
+                delBtn.innerHTML = '×';
+                delBtn.title = 'Delete Cycle';
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deletePlanCycle(index);
+                };
+                item.appendChild(delBtn);
+
+                headerWrapper.appendChild(item);
 
                 const content = document.createElement('div');
                 content.className = `tab-content ${index === activePlanIndex ? 'active' : ''}`;
@@ -939,8 +987,8 @@
 
         function switchPlanTab(index) {
             activePlanIndex = index;
-            document.querySelectorAll('#planTabsHeader .tab-btn').forEach((btn, i) => {
-                btn.classList.toggle('active', i === index);
+            document.querySelectorAll('#planTabsHeader .tab-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
             });
             document.querySelectorAll('#planTabsContainer .tab-content').forEach((c, i) => {
                 c.classList.toggle('active', i === index);
@@ -963,7 +1011,21 @@
             saveData();
         }
 
-        /* Gestão de Session & Lesson Logs (Abas por Mês) */
+        function deletePlanCycle(index) {
+            const plans = getPlansData();
+            if (plans.length <= 1) {
+                alert("You must keep at least one cycle.");
+                return;
+            }
+            plans.splice(index, 1);
+            if (activePlanIndex >= plans.length) {
+                activePlanIndex = plans.length - 1;
+            }
+            renderPlans(plans);
+            saveData();
+        }
+
+        /* Gestão de Session & Lesson Logs (Com Exclusão de Aba) */
         let activeSessionMonthIndex = 0;
 
         function getSessionMonthsData() {
@@ -999,12 +1061,32 @@
                 months = [{ title: 'Month 1', cards: [{date: '', topic: '', covered: '', teacherNotes: '', studentNotes: '', isOpen: true}] }];
             }
 
+            if (activeSessionMonthIndex >= months.length) {
+                activeSessionMonthIndex = months.length - 1;
+            }
+
             months.forEach((m, mIndex) => {
+                const item = document.createElement('div');
+                item.className = `tab-item ${mIndex === activeSessionMonthIndex ? 'active' : ''}`;
+
                 const btn = document.createElement('button');
-                btn.className = `tab-btn ${mIndex === activeSessionMonthIndex ? 'active' : ''}`;
+                btn.className = 'tab-btn';
                 btn.innerText = m.title || `Month ${mIndex + 1}`;
                 btn.onclick = () => switchSessionMonthTab(mIndex);
-                headerWrapper.appendChild(btn);
+                item.appendChild(btn);
+
+                // Botão de deletar aba de mês (×)
+                const delBtn = document.createElement('button');
+                delBtn.className = 'delete-tab-btn';
+                delBtn.innerHTML = '×';
+                delBtn.title = 'Delete Month Log';
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteSessionMonth(mIndex);
+                };
+                item.appendChild(delBtn);
+
+                headerWrapper.appendChild(item);
 
                 const content = document.createElement('div');
                 content.className = `tab-content ${mIndex === activeSessionMonthIndex ? 'active' : ''}`;
@@ -1074,8 +1156,8 @@
 
         function switchSessionMonthTab(index) {
             activeSessionMonthIndex = index;
-            document.querySelectorAll('#sessionTabsHeader .tab-btn').forEach((btn, i) => {
-                btn.classList.toggle('active', i === index);
+            document.querySelectorAll('#sessionTabsHeader .tab-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
             });
             document.querySelectorAll('#sessionTabsContainer .tab-content').forEach((c, i) => {
                 c.classList.toggle('active', i === index);
@@ -1089,6 +1171,20 @@
                 cards: [{date: '', topic: '', covered: '', teacherNotes: '', studentNotes: '', isOpen: true}]
             });
             activeSessionMonthIndex = months.length - 1;
+            renderSessionMonths(months);
+            saveData();
+        }
+
+        function deleteSessionMonth(index) {
+            const months = getSessionMonthsData();
+            if (months.length <= 1) {
+                alert("You must keep at least one month log.");
+                return;
+            }
+            months.splice(index, 1);
+            if (activeSessionMonthIndex >= months.length) {
+                activeSessionMonthIndex = months.length - 1;
+            }
             renderSessionMonths(months);
             saveData();
         }
