@@ -123,7 +123,7 @@
             gap: 6px;
             align-items: center;
             flex-wrap: wrap;
-            max-width: 480px;
+            max-width: 520px;
         }
 
         .format-toolbar.open {
@@ -155,7 +155,7 @@
             margin: 0 2px;
         }
 
-        /* Cabeçalho do Aluno - Reduzido e Compacto */
+        /* Cabeçalho do Aluno */
         .student-header {
             background: var(--card-bg);
             padding: 20px 24px;
@@ -527,13 +527,35 @@
             box-shadow: 0 8px 20px rgba(80, 32, 100, 0.1);
         }
 
-        .side-card h3 {
+        .side-card-header {
             margin-top: 0;
             font-size: 1.8rem;
             color: var(--brand-purple-dark);
             border-bottom: 2px solid rgba(80, 32, 100, 0.15);
             padding-bottom: 10px;
-            text-align: center;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .side-card-header.clickable {
+            cursor: pointer;
+        }
+
+        .side-card-header .toggle-arrow {
+            font-size: 1.2rem;
+            font-family: sans-serif;
+            transition: transform 0.3s;
+        }
+
+        .side-card.collapsed .side-card-header .toggle-arrow {
+            transform: rotate(-90deg);
+        }
+
+        .side-card.collapsed .side-card-body {
+            display: none;
         }
 
         .topic-item {
@@ -740,46 +762,52 @@
         <div class="sidebar-area">
             <!-- Card 1: Suggested Topics (Post-it) -->
             <aside class="side-card post-it">
-                <h3>Suggested Topics</h3>
-                
-                <div id="topics-list" style="margin-top: 12px;"></div>
+                <h3 class="side-card-header">Suggested Topics</h3>
+                <div class="side-card-body">
+                    <div id="topics-list" style="margin-top: 12px;"></div>
 
-                <div class="completed-section-toggle" onclick="toggleCompletedTopics()">
-                    <span>Completed Topics (<span id="completed-count">0</span>)</span>
-                    <span id="completed-arrow">⌄</span>
-                </div>
-                <div class="completed-topics-wrapper" id="completedTopicsWrapper">
-                    <div id="completed-topics-list"></div>
-                </div>
+                    <div class="completed-section-toggle" onclick="toggleCompletedTopics()">
+                        <span>Completed Topics (<span id="completed-count">0</span>)</span>
+                        <span id="completed-arrow">⌄</span>
+                    </div>
+                    <div class="completed-topics-wrapper" id="completedTopicsWrapper">
+                        <div id="completed-topics-list"></div>
+                    </div>
 
-                <div class="add-topic-box">
-                    <input type="text" id="new-topic-input" placeholder="New topic...">
-                    <button class="btn" onclick="addTopic()" style="padding: 8px 14px; background-color: var(--brand-purple-dark);">+</button>
+                    <div class="add-topic-box">
+                        <input type="text" id="new-topic-input" placeholder="New topic...">
+                        <button class="btn" onclick="addTopic()" style="padding: 8px 14px; background-color: var(--brand-purple-dark);">+</button>
+                    </div>
                 </div>
             </aside>
 
-            <!-- Card 2: Placement Chat (Agora na Lateral) -->
-            <aside class="side-card">
-                <h3>Placement Chat</h3>
-                <div class="placement-item">
-                    <label>Your goals:</label>
-                    <div contenteditable="true" id="chat-goals"></div>
-                </div>
-                <div class="placement-item">
-                    <label>You are concerned with:</label>
-                    <div contenteditable="true" id="chat-concerned"></div>
-                </div>
-                <div class="placement-item">
-                    <label>Your general interaction with language:</label>
-                    <div contenteditable="true" id="chat-interaction"></div>
-                </div>
-                <div class="placement-item">
-                    <label>What works for you:</label>
-                    <div contenteditable="true" id="chat-works"></div>
-                </div>
-                <div class="placement-item">
-                    <label>Teacher observations:</label>
-                    <div contenteditable="true" id="chat-observations"></div>
+            <!-- Card 2: Placement Chat (Agora Retrábil na Lateral) -->
+            <aside class="side-card" id="placementChatCard">
+                <h3 class="side-card-header clickable" onclick="togglePlacementChat()">
+                    <span>Placement Chat</span>
+                    <span class="toggle-arrow">⌄</span>
+                </h3>
+                <div class="side-card-body">
+                    <div class="placement-item">
+                        <label>Your goals:</label>
+                        <div contenteditable="true" id="chat-goals"></div>
+                    </div>
+                    <div class="placement-item">
+                        <label>You are concerned with:</label>
+                        <div contenteditable="true" id="chat-concerned"></div>
+                    </div>
+                    <div class="placement-item">
+                        <label>Your general interaction with language:</label>
+                        <div contenteditable="true" id="chat-interaction"></div>
+                    </div>
+                    <div class="placement-item">
+                        <label>What works for you:</label>
+                        <div contenteditable="true" id="chat-works"></div>
+                    </div>
+                    <div class="placement-item">
+                        <label>Teacher observations:</label>
+                        <div contenteditable="true" id="chat-observations"></div>
+                    </div>
                 </div>
             </aside>
         </div>
@@ -796,6 +824,7 @@
             <div class="divider"></div>
             
             <button class="format-btn" onclick="applyHighlight()" title="Marca-texto (Highlight)" style="background: var(--brand-pink); border-radius: 4px;">Highlight</button>
+            <button class="format-btn" onclick="removeHighlight()" title="Remover Highlight" style="border: 1px solid var(--border-color); border-radius: 4px;">Clear Highlight</button>
             <button class="format-btn" onclick="toggleTextColor()" title="Mudar cor do texto" style="color: var(--brand-red);">Red Text</button>
             
             <div class="divider"></div>
@@ -832,6 +861,11 @@
             card.classList.toggle('open');
         }
 
+        function togglePlacementChat() {
+            const card = document.getElementById('placementChatCard');
+            card.classList.toggle('collapsed');
+        }
+
         function toggleCompletedTopics() {
             const wrapper = document.getElementById('completedTopicsWrapper');
             const arrow = document.getElementById('completed-arrow');
@@ -851,6 +885,11 @@
 
         function applyHighlight() {
             document.execCommand('hiliteColor', false, '#F48FB1');
+            saveData();
+        }
+
+        function removeHighlight() {
+            document.execCommand('hiliteColor', false, 'transparent');
             saveData();
         }
 
@@ -1046,7 +1085,7 @@
             saveData();
         }
 
-        /* Gestão de Session & Lesson Logs (Com Tabela de 3 Colunas + For Next Session) */
+        /* Gestão de Session & Lesson Logs */
         let activeSessionMonthIndex = 0;
 
         function getSessionMonthsData() {
@@ -1140,7 +1179,6 @@
                             <label>Covered in session:</label>
                             <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.covered || ''}</div>
                             
-                            <!-- Nova Tabela de Teacher Notes em 3 Colunas -->
                             <label>Teacher Notes:</label>
                             <table>
                                 <thead>
@@ -1159,7 +1197,6 @@
                                 </tbody>
                             </table>
 
-                            <!-- Seção Separada: For Next Session -->
                             <label>For next session:</label>
                             <div class="card-next-session" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.nextSession || ''}</div>
 
