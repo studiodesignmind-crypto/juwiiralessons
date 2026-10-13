@@ -7,7 +7,7 @@
     <!-- Favicon com Emoji de Mão a Escrever -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✍️</text></svg>">
     
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
@@ -52,6 +52,7 @@
             display: grid;
             grid-template-columns: 1fr 340px;
             gap: 40px;
+            position: relative;
         }
 
         @media (max-width: 900px) {
@@ -74,43 +75,67 @@
             font-weight: normal;
         }
 
-        /* Barra de Ferramentas de Formatação Estilizada */
-        .format-toolbar {
+        /* Barra de Ferramentas Flutuante e Minimalista */
+        .toolbar-wrapper {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1000;
             display: flex;
-            gap: 8px;
-            background: var(--card-bg);
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 10px;
             align-items: center;
-            box-shadow: 0 2px 6px rgba(80, 32, 100, 0.03);
+            gap: 6px;
+        }
+
+        .toolbar-toggle-btn {
+            background: var(--brand-purple-dark);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-family: 'Century Gothic', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: opacity 0.2s, transform 0.2s;
+            opacity: 0.85;
+        }
+
+        .toolbar-toggle-btn:hover {
+            opacity: 1;
+            transform: scale(1.03);
+        }
+
+        .format-toolbar {
+            display: none;
+            background: rgba(255, 253, 253, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 6px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            gap: 6px;
+        }
+
+        .format-toolbar.open {
+            display: flex;
         }
 
         .format-btn {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
+            background: transparent;
+            border: none;
             color: var(--brand-purple-dark);
-            padding: 6px 12px;
+            padding: 4px 10px;
             border-radius: 6px;
             cursor: pointer;
             font-family: 'Century Gothic', sans-serif;
             font-weight: bold;
-            font-size: 0.85rem;
-            transition: all 0.2s;
+            font-size: 0.9rem;
+            transition: background 0.2s;
         }
 
         .format-btn:hover {
-            background: var(--brand-purple-dark);
-            color: #FFFFFF;
-            border-color: var(--brand-purple-dark);
-        }
-
-        .format-toolbar span {
-            font-size: 0.8rem;
-            color: #777;
-            margin-left: 8px;
-            font-style: italic;
+            background: var(--bg-main);
+            color: var(--brand-red);
         }
 
         /* Cabeçalho do Aluno */
@@ -166,6 +191,7 @@
             color: var(--brand-purple-mid);
             font-weight: 600;
             border-bottom: 2px solid var(--brand-lavender);
+            word-break: break-all;
         }
 
         .clean-field a:hover {
@@ -253,6 +279,7 @@
             background: var(--input-bg);
             transition: background 0.2s;
             color: var(--brand-dark);
+            min-height: 40px;
         }
 
         td[contenteditable="true"]:focus {
@@ -458,14 +485,6 @@
                 </div>
             </div>
 
-            <!-- Barra de Ferramentas Global de Formatação -->
-            <div class="format-toolbar">
-                <button class="format-btn" onclick="formatText('bold')"><b>B</b> Negrito</button>
-                <button class="format-btn" onclick="formatText('italic')"><i>I</i> Itálico</button>
-                <button class="format-btn" onclick="formatText('insertUnorderedList')">• Lista com Bullets</button>
-                <span>*Selecione o texto em qualquer caixa de texto abaixo para formatar</span>
-            </div>
-
             <!-- Aba 1: Placement Chat -->
             <div class="accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">Placement Chat</div>
@@ -551,6 +570,16 @@
         </aside>
     </div>
 
+    <!-- Barra de Ferramentas de Formatação Discreta / Flutuante -->
+    <div class="toolbar-wrapper">
+        <div class="format-toolbar" id="formatToolbar">
+            <button class="format-btn" onclick="formatText('bold')"><b>B</b></button>
+            <button class="format-btn" onclick="formatText('italic')"><i>I</i></button>
+            <button class="format-btn" onclick="formatText('insertUnorderedList')">• Bullet</button>
+        </div>
+        <button class="toolbar-toggle-btn" onclick="toggleFormatToolbar()">✍️ Format</button>
+    </div>
+
     <script>
         // Configuração do Firebase
         const firebaseConfig = {
@@ -572,13 +601,16 @@
             accordion.classList.toggle('active');
         }
 
-        // Função para aplicar formatação (Negrito, Itálico, Bullet Points)
+        function toggleFormatToolbar() {
+            const toolbar = document.getElementById('formatToolbar');
+            toolbar.classList.toggle('open');
+        }
+
         function formatText(command) {
             document.execCommand(command, false, null);
             saveData();
         }
 
-        // Atualiza dinamicamente o link clicável ao digitar no input de link
         function updateLinkDisplay(url) {
             const linkElement = document.getElementById('display-link');
             if (url && url.trim() !== '') {
@@ -596,59 +628,52 @@
             }
         }
 
-        document.getElementById('field-link').addEventListener('input', (e) => {
-            updateLinkDisplay(e.target.value);
-            saveData();
-        });
-
-        let isSaving = false;
         let saveTimeout = null;
 
         function saveData() {
-            if (isSaving) return;
             document.getElementById('sync-status').innerText = "Saving changes...";
             
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(() => {
                 const data = {
-                    student: document.getElementById('field-student').value,
-                    datetime: document.getElementById('field-datetime').value,
-                    start: document.getElementById('field-start').value,
-                    end: document.getElementById('field-end').value,
-                    link: document.getElementById('field-link').value,
+                    student: document.getElementById('field-student').value || '',
+                    datetime: document.getElementById('field-datetime').value || '',
+                    start: document.getElementById('field-start').value || '',
+                    end: document.getElementById('field-end').value || '',
+                    link: document.getElementById('field-link').value || '',
                     
-                    chatGoals: document.getElementById('chat-goals').innerHTML,
-                    chatConcerned: document.getElementById('chat-concerned').innerHTML,
-                    chatInteraction: document.getElementById('chat-interaction').innerHTML,
-                    chatWorks: document.getElementById('chat-works').innerHTML,
-                    chatObservations: document.getElementById('chat-observations').innerHTML,
+                    chatGoals: document.getElementById('chat-goals').innerHTML || '',
+                    chatConcerned: document.getElementById('chat-concerned').innerHTML || '',
+                    chatInteraction: document.getElementById('chat-interaction').innerHTML || '',
+                    chatWorks: document.getElementById('chat-works').innerHTML || '',
+                    chatObservations: document.getElementById('chat-observations').innerHTML || '',
 
-                    planNow: document.getElementById('plan-now').innerHTML,
-                    planWork: document.getElementById('plan-work').innerHTML,
-                    planAfter: document.getElementById('plan-after').innerHTML,
-                    planNext: document.getElementById('plan-next').innerHTML,
+                    planNow: document.getElementById('plan-now').innerHTML || '',
+                    planWork: document.getElementById('plan-work').innerHTML || '',
+                    planAfter: document.getElementById('plan-after').innerHTML || '',
+                    planNext: document.getElementById('plan-next').innerHTML || '',
 
                     cards: getCardsData(),
                     topics: getTopicsData()
                 };
 
-                docRef.set(data).then(() => {
+                docRef.set(data, { merge: true }).then(() => {
                     document.getElementById('sync-status').innerText = "All changes saved";
                 }).catch((error) => {
                     console.error("Error saving: ", error);
                     document.getElementById('sync-status').innerText = "Error saving changes";
                 });
-            }, 800);
+            }, 500);
         }
 
         function getCardsData() {
             const cards = [];
             document.querySelectorAll('.session-card').forEach(card => {
                 cards.push({
-                    topic: card.querySelector('.card-topic').value,
-                    covered: card.querySelector('.card-covered').innerHTML,
-                    teacherNotes: card.querySelector('.card-teacher').innerHTML,
-                    studentNotes: card.querySelector('.card-student').innerHTML
+                    topic: card.querySelector('.card-topic').value || '',
+                    covered: card.querySelector('.card-covered').innerHTML || '',
+                    teacherNotes: card.querySelector('.card-teacher').innerHTML || '',
+                    studentNotes: card.querySelector('.card-student').innerHTML || ''
                 });
             });
             return cards;
@@ -658,8 +683,8 @@
             const topics = [];
             document.querySelectorAll('.topic-item').forEach(item => {
                 topics.push({
-                    text: item.querySelector('span').innerText,
-                    completed: item.querySelector('input').checked
+                    text: item.querySelector('span').innerText || '',
+                    completed: item.querySelector('input').checked || false
                 });
             });
             return topics;
@@ -691,6 +716,7 @@
                 `;
                 div.querySelectorAll('[contenteditable="true"], input').forEach(el => {
                     el.addEventListener('input', saveData);
+                    el.addEventListener('blur', saveData);
                 });
                 wrapper.appendChild(div);
             });
@@ -717,6 +743,7 @@
             `;
             div.querySelectorAll('[contenteditable="true"], input').forEach(el => {
                 el.addEventListener('input', saveData);
+                el.addEventListener('blur', saveData);
             });
             wrapper.appendChild(div);
             saveData();
@@ -766,6 +793,7 @@
             saveData();
         }
 
+        // Listener do Firebase em Tempo Real
         docRef.onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
@@ -796,11 +824,17 @@
             }
         });
 
-        document.querySelectorAll('input:not(#field-link), [contenteditable="true"]').forEach(el => {
-            el.addEventListener('input', saveData);
-        });
+        // Configuração Inicial e Atribuição Global de Listeners
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input, [contenteditable="true"]').forEach(el => {
+                el.addEventListener('input', saveData);
+                el.addEventListener('blur', saveData);
+            });
 
-        window.onload = () => {
+            document.getElementById('field-link').addEventListener('input', (e) => {
+                updateLinkDisplay(e.target.value);
+            });
+
             docRef.get().then(doc => {
                 if (!doc.exists) {
                     renderCards();
@@ -808,9 +842,10 @@
                         { text: "Present Perfect vs Past Simple", completed: false },
                         { text: "Conditional Sentences", completed: false }
                     ]);
+                    saveData();
                 }
             });
-        };
+        });
     </script>
 </body>
 </html>
