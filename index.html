@@ -668,7 +668,7 @@
                     document.getElementById('sync-status').innerText = "All changes saved";
                 }).catch((error) => {
                     console.error("Error saving to Firebase: ", error);
-                    document.getElementById('sync-status').innerText = "Error saving: Check Firebase Rules";
+                    document.getElementById('sync-status').innerText = "Error saving changes";
                 });
             }, 600);
         }
@@ -677,6 +677,7 @@
             const cards = [];
             document.querySelectorAll('.session-card').forEach(card => {
                 cards.push({
+                    date: card.querySelector('.card-date').value || '',
                     topic: card.querySelector('.card-topic').value || '',
                     covered: card.querySelector('.card-covered').innerHTML || '',
                     teacherNotes: card.querySelector('.card-teacher').innerHTML || '',
@@ -701,14 +702,17 @@
             const wrapper = document.getElementById('cards-wrapper');
             wrapper.innerHTML = '';
             if (cards.length === 0) {
-                cards = [{topic: '', covered: '', teacherNotes: '', studentNotes: ''}];
+                cards = [{date: '', topic: '', covered: '', teacherNotes: '', studentNotes: ''}];
             }
             cards.forEach((c) => {
                 const div = document.createElement('div');
                 div.className = 'session-card';
                 div.innerHTML = `
-                    <label>Date and topic:</label>
-                    <input type="text" class="card-topic" value="${c.topic || ''}" placeholder="e.g. 15/10 - Past Perfect">
+                    <label>Session Date:</label>
+                    <input type="date" class="card-date" value="${c.date || ''}">
+                    
+                    <label>Topic:</label>
+                    <input type="text" class="card-topic" value="${c.topic || ''}" placeholder="e.g. Past Perfect">
                     
                     <label>Covered in session:</label>
                     <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.covered || ''}</div>
@@ -734,8 +738,11 @@
             const div = document.createElement('div');
             div.className = 'session-card';
             div.innerHTML = `
-                <label>Date and topic:</label>
-                <input type="text" class="card-topic" placeholder="e.g. 15/10 - Past Perfect">
+                <label>Session Date:</label>
+                <input type="date" class="card-date">
+                
+                <label>Topic:</label>
+                <input type="text" class="card-topic" placeholder="e.g. Past Perfect">
                 
                 <label>Covered in session:</label>
                 <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;"></div>
@@ -800,17 +807,18 @@
             saveData();
         }
 
-        // Listener Sincronizado do Firebase
+        // Listener Sincronizado do Firebase com verificação de foco ativo
         docRef.onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
+                const activeEl = document.activeElement;
                 
-                if (document.activeElement !== document.getElementById('field-student')) document.getElementById('field-student').value = data.student || '';
-                if (document.activeElement !== document.getElementById('field-datetime')) document.getElementById('field-datetime').value = data.datetime || '';
-                if (document.activeElement !== document.getElementById('field-start')) document.getElementById('field-start').value = data.start || '';
-                if (document.activeElement !== document.getElementById('field-end')) document.getElementById('field-end').value = data.end || '';
+                if (activeEl !== document.getElementById('field-student')) document.getElementById('field-student').value = data.student || '';
+                if (activeEl !== document.getElementById('field-datetime')) document.getElementById('field-datetime').value = data.datetime || '';
+                if (activeEl !== document.getElementById('field-start')) document.getElementById('field-start').value = data.start || '';
+                if (activeEl !== document.getElementById('field-end')) document.getElementById('field-end').value = data.end || '';
                 
-                if (document.activeElement !== linkDiv) {
+                if (activeEl !== linkDiv) {
                     const savedLink = data.link || '';
                     linkDiv.setAttribute('data-raw-url', savedLink);
                     if (savedLink.trim() !== '') {
@@ -824,27 +832,28 @@
                     }
                 }
 
-                if (document.activeElement !== document.getElementById('chat-goals')) document.getElementById('chat-goals').innerHTML = data.chatGoals || '';
-                if (document.activeElement !== document.getElementById('chat-concerned')) document.getElementById('chat-concerned').innerHTML = data.chatConcerned || '';
-                if (document.activeElement !== document.getElementById('chat-interaction')) document.getElementById('chat-interaction').innerHTML = data.chatInteraction || '';
-                if (document.activeElement !== document.getElementById('chat-works')) document.getElementById('chat-works').innerHTML = data.chatWorks || '';
-                if (document.activeElement !== document.getElementById('chat-observations')) document.getElementById('chat-observations').innerHTML = data.chatObservations || '';
+                if (activeEl !== document.getElementById('chat-goals')) document.getElementById('chat-goals').innerHTML = data.chatGoals || '';
+                if (activeEl !== document.getElementById('chat-concerned')) document.getElementById('chat-concerned').innerHTML = data.chatConcerned || '';
+                if (activeEl !== document.getElementById('chat-interaction')) document.getElementById('chat-interaction').innerHTML = data.chatInteraction || '';
+                if (activeEl !== document.getElementById('chat-works')) document.getElementById('chat-works').innerHTML = data.chatWorks || '';
+                if (activeEl !== document.getElementById('chat-observations')) document.getElementById('chat-observations').innerHTML = data.chatObservations || '';
 
-                if (document.activeElement !== document.getElementById('plan-now')) document.getElementById('plan-now').innerHTML = data.planNow || '';
-                if (document.activeElement !== document.getElementById('plan-work')) document.getElementById('plan-work').innerHTML = data.planWork || '';
-                if (document.activeElement !== document.getElementById('plan-after')) document.getElementById('plan-after').innerHTML = data.planAfter || '';
-                if (document.activeElement !== document.getElementById('plan-next')) document.getElementById('plan-next').innerHTML = data.planNext || '';
+                if (activeEl !== document.getElementById('plan-now')) document.getElementById('plan-now').innerHTML = data.planNow || '';
+                if (activeEl !== document.getElementById('plan-work')) document.getElementById('plan-work').innerHTML = data.planWork || '';
+                if (activeEl !== document.getElementById('plan-after')) document.getElementById('plan-after').innerHTML = data.planAfter || '';
+                if (activeEl !== document.getElementById('plan-next')) document.getElementById('plan-next').innerHTML = data.planNext || '';
 
-                if (data.cards) renderCards(data.cards);
-                if (data.topics) renderTopics(data.topics);
+                // Só re-renderiza os cards de sessão se o utilizador não estiver a focar em nenhum campo dentro deles
+                const editingCard = activeEl && activeEl.closest('.session-card');
+                if (!editingCard && data.cards) {
+                    renderCards(data.cards);
+                }
+                
+                if (data.topics && !document.activeElement.closest('.post-it')) {
+                    renderTopics(data.topics);
+                }
                 
                 document.getElementById('sync-status').innerText = "All changes saved";
-            } else {
-                renderCards();
-                renderTopics([
-                    { text: "Present Perfect vs Past Simple", completed: false },
-                    { text: "Conditional Sentences", completed: false }
-                ]);
             }
         }, (error) => {
             console.error("Firebase Snapshot Error:", error);
