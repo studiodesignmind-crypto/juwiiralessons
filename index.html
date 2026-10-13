@@ -781,7 +781,7 @@
                 </div>
             </aside>
 
-            <!-- Card 2: Placement Chat (Agora Retrábil na Lateral) -->
+            <!-- Card 2: Placement Chat (Retrábil na Lateral) -->
             <aside class="side-card" id="placementChatCard">
                 <h3 class="side-card-header clickable" onclick="togglePlacementChat()">
                     <span>Placement Chat</span>
@@ -1085,7 +1085,7 @@
             saveData();
         }
 
-        /* Gestão de Session & Lesson Logs */
+        /* Gestão de Session & Lesson Logs (Com Tabela de 3 Colunas + Observations + For Next Session) */
         let activeSessionMonthIndex = 0;
 
         function getSessionMonthsData() {
@@ -1100,6 +1100,7 @@
                         grammar: card.querySelector('.card-grammar').innerHTML || '',
                         vocab: card.querySelector('.card-vocab').innerHTML || '',
                         pronunciation: card.querySelector('.card-pronunciation').innerHTML || '',
+                        observations: card.querySelector('.card-observations').innerHTML || '',
                         nextSession: card.querySelector('.card-next-session').innerHTML || '',
                         studentNotes: card.querySelector('.card-student').innerHTML || '',
                         isOpen: card.classList.contains('open')
@@ -1121,7 +1122,7 @@
             containerWrapper.innerHTML = '';
 
             if (months.length === 0) {
-                months = [{ title: 'Month 1', cards: [{date: '', topic: '', covered: '', grammar: '', vocab: '', pronunciation: '', nextSession: '', studentNotes: '', isOpen: true}] }];
+                months = [{ title: 'Month 1', cards: [{date: '', topic: '', covered: '', grammar: '', vocab: '', pronunciation: '', observations: '', nextSession: '', studentNotes: '', isOpen: true}] }];
             }
 
             if (activeSessionMonthIndex >= months.length) activeSessionMonthIndex = months.length - 1;
@@ -1155,7 +1156,7 @@
                 cardsContainer.className = 'cards-container';
 
                 if (!m.cards || m.cards.length === 0) {
-                    m.cards = [{date: '', topic: '', covered: '', grammar: '', vocab: '', pronunciation: '', nextSession: '', studentNotes: '', isOpen: true}];
+                    m.cards = [{date: '', topic: '', covered: '', grammar: '', vocab: '', pronunciation: '', observations: '', nextSession: '', studentNotes: '', isOpen: true}];
                 }
 
                 m.cards.forEach((c, index) => {
@@ -1179,6 +1180,7 @@
                             <label>Covered in session:</label>
                             <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.covered || ''}</div>
                             
+                            <!-- Tabela de Teacher Notes em 3 Colunas -->
                             <label>Teacher Notes:</label>
                             <table>
                                 <thead>
@@ -1197,6 +1199,11 @@
                                 </tbody>
                             </table>
 
+                            <!-- Campo Livre: Observations -->
+                            <label>Observations:</label>
+                            <div class="card-observations" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.observations || ''}</div>
+
+                            <!-- Seção Separada: For Next Session -->
                             <label>For next session:</label>
                             <div class="card-next-session" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.nextSession || ''}</div>
 
@@ -1246,7 +1253,7 @@
             const months = getSessionMonthsData();
             months.push({
                 title: `Month ${months.length + 1}`,
-                cards: [{date: '', topic: '', covered: '', grammar: '', vocab: '', pronunciation: '', nextSession: '', studentNotes: '', isOpen: true}]
+                cards: [{date: '', topic: '', covered: '', grammar: '', vocab: '', pronunciation: '', observations: '', nextSession: '', studentNotes: '', isOpen: true}]
             });
             activeSessionMonthIndex = months.length - 1;
             renderSessionMonths(months);
@@ -1301,6 +1308,9 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <label>Observations:</label>
+                    <div class="card-observations" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;"></div>
 
                     <label>For next session:</label>
                     <div class="card-next-session" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;"></div>
