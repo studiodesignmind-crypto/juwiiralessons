@@ -430,11 +430,11 @@
         .topic-item {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 12px;
             margin-bottom: 10px;
             font-size: 0.95rem;
             font-family: 'Century Gothic', sans-serif;
-            cursor: pointer;
             background: rgba(255, 255, 255, 0.7);
             padding: 8px 12px;
             border-radius: 8px;
@@ -444,6 +444,14 @@
 
         .topic-item:hover {
             background: rgba(255, 255, 255, 0.95);
+        }
+
+        .topic-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            cursor: pointer;
         }
 
         .topic-item input[type="checkbox"] {
@@ -456,6 +464,24 @@
         .topic-item.completed span {
             text-decoration: line-through;
             color: rgba(26, 26, 26, 0.4);
+        }
+
+        .delete-topic-btn {
+            background: transparent;
+            border: none;
+            color: rgba(107, 15, 26, 0.6);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+            border-radius: 4px;
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .delete-topic-btn:hover {
+            color: var(--brand-red);
+            background: rgba(107, 15, 26, 0.1);
         }
 
         .completed-section-toggle {
@@ -792,7 +818,6 @@
             }
             cards.forEach((c, index) => {
                 const div = document.createElement('div');
-                // Por padrão a primeira aula (index 0) vem aberta
                 const isOpen = c.isOpen !== undefined ? c.isOpen : (index === 0);
                 div.className = `session-card-accordion ${isOpen ? 'open' : ''}`;
                 
@@ -848,7 +873,6 @@
 
         function addCard() {
             const wrapper = document.getElementById('cards-wrapper');
-            // Fecha as outras para abrir a nova limpa no topo
             document.querySelectorAll('.session-card-accordion').forEach(c => c.classList.remove('open'));
 
             const div = document.createElement('div');
@@ -902,8 +926,11 @@
                 const div = document.createElement('div');
                 div.className = `topic-item ${t.completed ? 'completed' : ''}`;
                 div.innerHTML = `
-                    <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTopic(this)">
-                    <span>${t.text}</span>
+                    <div class="topic-content">
+                        <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTopic(this)">
+                        <span>${t.text}</span>
+                    </div>
+                    <button class="delete-topic-btn" onclick="deleteTopic(this)" title="Delete topic">×</button>
                 `;
 
                 if (t.completed) {
@@ -933,8 +960,11 @@
             const div = document.createElement('div');
             div.className = 'topic-item';
             div.innerHTML = `
-                <input type="checkbox" onchange="toggleTopic(this)">
-                <span>${input.value}</span>
+                <div class="topic-content">
+                    <input type="checkbox" onchange="toggleTopic(this)">
+                    <span>${input.value}</span>
+                </div>
+                <button class="delete-topic-btn" onclick="deleteTopic(this)" title="Delete topic">×</button>
             `;
             activeList.appendChild(div);
             input.value = '';
@@ -942,6 +972,11 @@
         }
 
         function toggleTopic(checkbox) {
+            saveData();
+        }
+
+        function deleteTopic(btn) {
+            btn.closest('.topic-item').remove();
             saveData();
         }
 
