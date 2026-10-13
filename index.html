@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Progress Tracker</title>
+    <!-- Favicon com Emoji de Livros -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <style>
-        /* Importação das fontes do sistema e fallbacks */
         @font-face {
             font-family: 'Harlow Solid';
             src: local('Harlow Solid'), local('Harlow Solid Italic');
@@ -61,19 +62,19 @@
         }
 
         header h1 {
-            font-size: 3rem;
+            font-size: 3.2rem;
             margin-bottom: 20px;
             text-align: center;
             color: var(--brand-purple-dark);
         }
 
-        /* Cabeçalho do Aluno (Design Limpo sobre Fundo Branco) */
+        /* Cabeçalho do Aluno (Fundo branco limpo com bordas coloridas dinâmicas) */
         .student-header {
             background: #FFFFFF;
             padding: 25px;
             border-radius: 12px;
-            border: 2px solid var(--brand-lavender);
-            box-shadow: 0 4px 12px rgba(80, 32, 100, 0.08);
+            border: 2px solid var(--brand-purple-mid);
+            box-shadow: 0 4px 15px rgba(80, 32, 100, 0.08);
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 18px;
@@ -119,7 +120,7 @@
             background: #FFFFFF;
             border-radius: 12px;
             border: 2px solid var(--brand-purple-mid);
-            box-shadow: 0 4px 10px rgba(107, 58, 126, 0.1);
+            box-shadow: 0 4px 12px rgba(107, 58, 126, 0.08);
             overflow: hidden;
         }
 
@@ -192,7 +193,7 @@
         }
 
         td[contenteditable="true"]:focus {
-            background: #FFF0F5;
+            background: #FAF3FB;
             box-shadow: inset 0 0 0 2px var(--brand-pink);
         }
 
@@ -273,13 +274,13 @@
             background-color: #4A0A12;
         }
 
-        /* Post-it Lateral (Usando a cor Rosa Vibrante #F48FB1 da ID Visual) */
+        /* Post-it Lateral Dinâmico */
         .post-it {
             background-color: var(--brand-pink);
             color: var(--brand-dark);
             padding: 25px;
             border-radius: 4px;
-            box-shadow: 4px 6px 18px rgba(0,0,0,0.15);
+            box-shadow: 4px 6px 18px rgba(0,0,0,0.12);
             position: sticky;
             top: 20px;
             height: fit-content;
@@ -288,7 +289,7 @@
 
         .post-it h3 {
             margin-top: 0;
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: var(--brand-purple-dark);
             border-bottom: 2px dashed var(--brand-purple-dark);
             padding-bottom: 8px;
@@ -348,7 +349,7 @@
                 <h1>Student Progress Tracker</h1>
             </header>
 
-            <!-- Cabeçalho do Aluno (Fundo branco com realces coloridos) -->
+            <!-- Cabeçalho do Aluno (Limpo e elegante) -->
             <div class="student-header">
                 <div class="clean-field full-width">
                     <label>Student:</label>
@@ -430,7 +431,7 @@
                 </div>
             </div>
 
-            <!-- Aba 3: Session & Lesson Log (Sempre aberta por padrão) -->
+            <!-- Aba 3: Session & Lesson Log (Aberta por padrão) -->
             <div class="accordion active" id="session-accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">Session & Lesson Log</div>
                 <div class="accordion-content" style="max-height: none;">
@@ -444,7 +445,7 @@
             <div class="sync-status" id="sync-status">All changes saved</div>
         </div>
 
-        <!-- Coluna Lateral Post-it (Rosa #F48FB1 da ID Visual) -->
+        <!-- Coluna Lateral Post-it -->
         <aside class="post-it">
             <h3>Suggested Topics</h3>
             <div id="topics-list">
@@ -471,7 +472,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Referência do documento único para sincronização
         const docRef = db.collection("tracker").doc("studentData");
 
         function toggleAccordion(header) {
@@ -644,7 +644,6 @@
             saveData();
         }
 
-        // Sincronização em tempo real via Firestore
         docRef.onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
