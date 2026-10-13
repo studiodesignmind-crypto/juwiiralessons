@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Progress Tracker</title>
-    <!-- Favicon com Emoji de Livros -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <!-- Favicon com Emoji de Mão a Escrever -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✍️</text></svg>">
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -19,23 +19,24 @@
 
         :root {
             --brand-purple-dark: #502064;
+            --brand-red: #6B0F1A;
             --brand-dark: #1A1A1A;
             --brand-purple-mid: #6B3A7E;
             --brand-lavender: #D8B4D9;
             --brand-pink: #F48FB1;
             
-            /* Fundo COR Creme/Rose pastel elegante (inspiração Nath Lex) - NADA DE BRANCO! */
-            --bg-color: #EFE3DC;
-            --card-bg: #F8EFEA;
-            --input-bg: #FFF9F6;
-            --text-main: #1A1A1A;
-            --border-subtle: #D1C2BA;
+            /* Paleta Nude / Rose com Alto Contraste */
+            --bg-main: #F4EBEB;
+            --card-bg: #FFFDFD;
+            --input-bg: #F9F2F2;
+            --text-dark: #1A1A1A;
+            --border-color: #E2D2D2;
         }
 
         body {
             font-family: 'Century Gothic', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
             margin: 0;
             padding: 40px 20px;
             min-height: 100vh;
@@ -66,10 +67,10 @@
         }
 
         header h1 {
-            font-size: 3.5rem;
+            font-size: 3.6rem;
             margin-bottom: 10px;
             text-align: center;
-            color: var(--brand-purple-dark);
+            color: var(--brand-red);
             font-weight: normal;
         }
 
@@ -78,8 +79,9 @@
             background: var(--card-bg);
             padding: 30px;
             border-radius: 16px;
-            border: 2px solid var(--border-subtle);
-            box-shadow: 0 4px 15px rgba(80, 32, 100, 0.05);
+            border: 2px solid var(--border-color);
+            border-left: 6px solid var(--brand-red);
+            box-shadow: 0 4px 15px rgba(26, 26, 26, 0.05);
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
@@ -98,14 +100,14 @@
 
         .clean-field label {
             font-weight: bold;
-            color: var(--brand-purple-dark);
+            color: var(--brand-red);
             white-space: nowrap;
             font-family: 'Century Gothic', sans-serif;
         }
 
         .clean-field input {
             border: none;
-            border-bottom: 2px solid var(--brand-purple-mid);
+            border-bottom: 2px solid var(--border-color);
             background: transparent;
             font-family: 'Century Gothic', sans-serif;
             font-size: 1rem;
@@ -117,34 +119,34 @@
         }
 
         .clean-field input:focus {
-            border-bottom-color: var(--brand-purple-dark);
+            border-bottom-color: var(--brand-red);
         }
 
-        /* Abas Retráteis (Accordions) */
+        /* Abas Retráteis (Preto e Vermelho intencionais) */
         .accordion {
             background: var(--card-bg);
             border-radius: 16px;
-            border: 2px solid var(--border-subtle);
-            box-shadow: 0 4px 15px rgba(80, 32, 100, 0.05);
+            border: 2px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(26, 26, 26, 0.05);
             overflow: hidden;
             transition: box-shadow 0.3s ease;
         }
 
         .accordion-header {
-            background-color: var(--brand-purple-dark);
+            background-color: var(--brand-dark);
             color: #FFFFFF;
             padding: 20px 30px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 2rem;
+            font-size: 2.2rem;
             user-select: none;
             transition: background 0.3s;
         }
 
         .accordion-header:hover {
-            background-color: var(--brand-purple-mid);
+            background-color: var(--brand-red);
         }
 
         .accordion-header::after {
@@ -181,7 +183,7 @@
         }
 
         th, td {
-            border: 1px solid var(--border-subtle);
+            border: 1px solid var(--border-color);
             padding: 14px;
             text-align: left;
             vertical-align: top;
@@ -189,7 +191,7 @@
         }
 
         th {
-            background-color: var(--brand-purple-mid);
+            background-color: var(--brand-red);
             color: #FFFFFF;
             font-size: 0.95rem;
             font-weight: 600;
@@ -203,7 +205,7 @@
 
         td[contenteditable="true"]:focus {
             background: #FFFFFF;
-            box-shadow: inset 0 0 0 2px var(--brand-purple-mid);
+            box-shadow: inset 0 0 0 2px var(--brand-red);
         }
 
         /* Session & Lesson Log Cards */
@@ -216,7 +218,7 @@
 
         .session-card {
             background: var(--card-bg);
-            border: 2px solid var(--border-subtle);
+            border: 2px solid var(--border-color);
             border-left: 6px solid var(--brand-purple-dark);
             border-radius: 12px;
             padding: 24px;
@@ -228,13 +230,13 @@
         .session-card label {
             font-weight: bold;
             font-size: 0.95rem;
-            color: var(--brand-purple-dark);
+            color: var(--brand-dark);
             font-family: 'Century Gothic', sans-serif;
         }
 
         .session-card input, .session-card textarea {
             width: 100%;
-            border: 1px solid var(--border-subtle);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 12px;
             font-family: 'Century Gothic', sans-serif;
@@ -248,7 +250,7 @@
         }
 
         .session-card input:focus, .session-card textarea:focus {
-            border-color: var(--brand-purple-dark);
+            border-color: var(--brand-red);
             background: #FFFFFF;
         }
 
@@ -258,7 +260,7 @@
 
         /* Botões */
         .btn {
-            background-color: var(--brand-purple-dark);
+            background-color: var(--brand-red);
             color: #FFFFFF;
             border: none;
             padding: 12px 26px;
@@ -272,29 +274,30 @@
         }
 
         .btn:hover {
-            background-color: var(--brand-purple-mid);
+            background-color: var(--brand-purple-dark);
         }
 
         .btn-delete {
             background-color: transparent;
-            color: #A63232;
-            border: 1px solid #D8A5A5;
+            color: var(--brand-red);
+            border: 1px solid var(--brand-red);
             padding: 6px 14px;
             font-size: 0.85rem;
             align-self: flex-end;
         }
 
         .btn-delete:hover {
-            background-color: #F8E2E2;
+            background-color: var(--brand-red);
+            color: #FFFFFF;
         }
 
-        /* Post-it Lateral Rosa Vibrante */
+        /* Post-it Lateral em Rosa Vibrante com Detalhes Pretos */
         .post-it {
             background-color: var(--brand-pink);
             color: var(--brand-dark);
             padding: 30px;
             border-radius: 14px;
-            box-shadow: 0 10px 30px rgba(80, 32, 100, 0.15);
+            box-shadow: 0 10px 25px rgba(26, 26, 26, 0.12);
             position: sticky;
             top: 40px;
             height: fit-content;
@@ -303,8 +306,8 @@
         .post-it h3 {
             margin-top: 0;
             font-size: 2.2rem;
-            color: var(--brand-purple-dark);
-            border-bottom: 2px solid rgba(80, 32, 100, 0.2);
+            color: var(--brand-dark);
+            border-bottom: 2px solid var(--brand-dark);
             padding-bottom: 12px;
             text-align: center;
         }
@@ -317,18 +320,18 @@
             font-size: 1rem;
             font-family: 'Century Gothic', sans-serif;
             cursor: pointer;
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.7);
             padding: 10px 12px;
             border-radius: 8px;
             transition: background 0.2s;
         }
 
         .topic-item:hover {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
         }
 
         .topic-item input[type="checkbox"] {
-            accent-color: var(--brand-purple-dark);
+            accent-color: var(--brand-red);
             width: 18px;
             height: 18px;
             cursor: pointer;
@@ -348,7 +351,7 @@
         .add-topic-box input {
             flex: 1;
             padding: 10px;
-            border: 1px solid rgba(80, 32, 100, 0.2);
+            border: 1px solid var(--brand-dark);
             border-radius: 8px;
             font-family: 'Century Gothic', sans-serif;
             background: #FFFFFF;
@@ -360,7 +363,7 @@
         .sync-status {
             text-align: center;
             font-size: 0.85rem;
-            color: var(--brand-purple-dark);
+            color: var(--brand-red);
             margin-top: 15px;
             font-weight: bold;
         }
@@ -478,7 +481,7 @@
             </div>
             <div class="add-topic-box">
                 <input type="text" id="new-topic-input" placeholder="New topic...">
-                <button class="btn" onclick="addTopic()" style="padding: 10px 16px;">+</button>
+                <button class="btn" onclick="addTopic()" style="padding: 10px 16px; background-color: var(--brand-dark);">+</button>
             </div>
         </aside>
     </div>
