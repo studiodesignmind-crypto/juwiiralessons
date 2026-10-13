@@ -38,11 +38,11 @@
             background-color: var(--bg-main);
             color: var(--text-dark);
             margin: 0;
-            padding: 40px 20px;
+            padding: 30px 20px;
             min-height: 100vh;
         }
 
-        h1, h2, h3, .accordion-header, .post-it h3, .session-accordion-header {
+        h1, h2, h3, .accordion-header, .side-card h3, .session-accordion-header {
             font-family: 'Harlow Solid', 'Harlow Solid Italic', cursive;
         }
 
@@ -51,7 +51,7 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 340px;
-            gap: 40px;
+            gap: 30px;
             position: relative;
         }
 
@@ -64,12 +64,19 @@
         .content-area {
             display: flex;
             flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-area {
+            display: flex;
+            flex-direction: column;
             gap: 24px;
         }
 
         header h1 {
-            font-size: 3.6rem;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 5px;
+            margin-top: 0;
             text-align: center;
             color: var(--brand-purple-dark);
             font-weight: normal;
@@ -148,17 +155,17 @@
             margin: 0 2px;
         }
 
-        /* Cabeçalho do Aluno */
+        /* Cabeçalho do Aluno - Reduzido e Compacto */
         .student-header {
             background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
+            padding: 20px 24px;
+            border-radius: 14px;
             border: 2px solid var(--border-color);
-            border-left: 6px solid var(--brand-red);
-            box-shadow: 0 4px 15px rgba(80, 32, 100, 0.05);
+            border-left: 5px solid var(--brand-red);
+            box-shadow: 0 4px 12px rgba(80, 32, 100, 0.04);
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 14px;
         }
 
         .student-header .full-width {
@@ -168,8 +175,8 @@
         .clean-field {
             display: flex;
             align-items: baseline;
-            gap: 12px;
-            font-size: 1rem;
+            gap: 10px;
+            font-size: 0.9rem;
         }
 
         .clean-field label {
@@ -184,11 +191,11 @@
             border-bottom: 2px solid var(--border-color);
             background: transparent;
             font-family: 'Century Gothic', sans-serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--brand-dark);
             width: 100%;
             outline: none;
-            padding: 4px 2px;
+            padding: 2px 2px;
             transition: border-color 0.3s;
         }
 
@@ -199,7 +206,7 @@
         .link-container {
             display: inline-block;
             cursor: text;
-            min-height: 24px;
+            min-height: 22px;
         }
 
         .link-container a {
@@ -214,12 +221,12 @@
             border-bottom-color: var(--brand-red);
         }
 
-        /* Abas Retráteis (Accordions Principais) */
+        /* Accordions Principais Compactados */
         .accordion {
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 14px;
             border: 2px solid var(--border-color);
-            box-shadow: 0 4px 15px rgba(80, 32, 100, 0.05);
+            box-shadow: 0 4px 12px rgba(80, 32, 100, 0.04);
             overflow: hidden;
             transition: box-shadow 0.3s ease;
         }
@@ -227,12 +234,12 @@
         .accordion-header {
             background-color: var(--brand-purple-dark);
             color: #FFFFFF;
-            padding: 20px 30px;
+            padding: 14px 24px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             user-select: none;
             transition: background 0.3s;
         }
@@ -243,7 +250,7 @@
 
         .accordion-header::after {
             content: '⌄';
-            font-size: 1.6rem;
+            font-size: 1.3rem;
             font-family: sans-serif;
             transition: transform 0.35s ease;
             color: #FFFFFF;
@@ -257,24 +264,24 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
-            padding: 0 30px;
+            padding: 0 24px;
             background: var(--card-bg);
         }
 
         .accordion.active .accordion-content {
             max-height: 5000px;
             transition: max-height 0.6s ease-in;
-            padding: 25px 30px 30px 30px;
+            padding: 20px 24px 24px 24px;
         }
 
-        /* Estrutura de Abas Horizontais com Botão de Exclusão (×) */
+        /* Estrutura de Abas Horizontais */
         .tabs-header {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             border-bottom: 2px solid var(--border-color);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             overflow-x: auto;
-            padding-bottom: 4px;
+            padding-bottom: 2px;
             align-items: center;
         }
 
@@ -284,7 +291,7 @@
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             border-bottom: none;
-            border-radius: 8px 8px 0 0;
+            border-radius: 6px 6px 0 0;
             overflow: hidden;
             transition: all 0.2s;
         }
@@ -292,11 +299,11 @@
         .tab-btn {
             background: transparent;
             border: none;
-            padding: 8px 12px 8px 16px;
+            padding: 6px 10px 6px 14px;
             cursor: pointer;
             font-family: 'Century Gothic', sans-serif;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--brand-purple-dark);
             white-space: nowrap;
         }
@@ -314,10 +321,10 @@
             background: transparent;
             border: none;
             color: var(--brand-red);
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             cursor: pointer;
-            padding: 0 10px 0 2px;
+            padding: 0 8px 0 2px;
             transition: opacity 0.2s;
         }
 
@@ -341,12 +348,12 @@
             background: transparent;
             border: 1px dashed var(--brand-purple-dark);
             color: var(--brand-purple-dark);
-            padding: 8px 16px;
-            border-radius: 8px 8px 0 0;
+            padding: 6px 12px;
+            border-radius: 6px 6px 0 0;
             cursor: pointer;
             font-family: 'Century Gothic', sans-serif;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: all 0.2s;
             white-space: nowrap;
         }
@@ -356,7 +363,7 @@
             color: #FFFFFF;
         }
 
-        /* Tabelas */
+        /* Tabelas Compactadas */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -365,16 +372,17 @@
 
         th, td {
             border: 1px solid var(--border-color);
-            padding: 14px;
+            padding: 10px 12px;
             text-align: left;
             vertical-align: top;
             font-family: 'Century Gothic', sans-serif;
+            font-size: 0.88rem;
         }
 
         th {
             background-color: var(--brand-red);
             color: #FFFFFF;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 600;
         }
 
@@ -383,7 +391,7 @@
             background: var(--input-bg);
             transition: background 0.2s;
             color: var(--brand-dark);
-            min-height: 40px;
+            min-height: 35px;
         }
 
         td[contenteditable="true"]:focus {
@@ -391,30 +399,30 @@
             box-shadow: inset 0 0 0 2px var(--brand-red);
         }
 
-        /* Session & Lesson Log Cards com Accordion Individual */
+        /* Session Cards */
         .cards-container {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            margin-top: 10px;
+            gap: 14px;
+            margin-top: 5px;
         }
 
         .session-card-accordion {
             border: 1px solid var(--border-color);
-            border-left: 6px solid var(--brand-purple-dark);
-            border-radius: 12px;
+            border-left: 5px solid var(--brand-purple-dark);
+            border-radius: 10px;
             background: var(--card-bg);
             overflow: hidden;
         }
 
         .session-accordion-header {
             background: var(--input-bg);
-            padding: 16px 20px;
+            padding: 12px 16px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: var(--brand-purple-dark);
             user-select: none;
         }
@@ -425,7 +433,7 @@
 
         .session-accordion-header::after {
             content: '⌄';
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-family: sans-serif;
             transition: transform 0.3s;
         }
@@ -436,9 +444,9 @@
 
         .session-accordion-body {
             display: none;
-            padding: 20px;
+            padding: 16px;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
             border-top: 1px solid var(--border-color);
         }
 
@@ -448,22 +456,21 @@
 
         .session-accordion-body label {
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--brand-purple-dark);
             font-family: 'Century Gothic', sans-serif;
         }
 
-        .session-accordion-body input, .session-accordion-body textarea {
+        .session-accordion-body input {
             width: 100%;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 6px;
+            padding: 8px 10px;
             font-family: 'Century Gothic', sans-serif;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             background: #FFFFFF;
             color: var(--brand-dark);
             outline: none;
-            resize: vertical;
             box-sizing: border-box;
         }
 
@@ -476,12 +483,12 @@
             background-color: var(--brand-red);
             color: #FFFFFF;
             border: none;
-            padding: 12px 26px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 6px;
             cursor: pointer;
             font-family: 'Century Gothic', sans-serif;
             font-weight: bold;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             transition: background 0.2s;
             align-self: flex-start;
         }
@@ -494,10 +501,10 @@
             background-color: transparent;
             color: var(--brand-red);
             border: 1px solid var(--brand-red);
-            padding: 6px 14px;
-            font-size: 0.85rem;
+            padding: 5px 12px;
+            font-size: 0.8rem;
             align-self: flex-end;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .btn-delete:hover {
@@ -505,24 +512,27 @@
             color: #FFFFFF;
         }
 
-        /* Post-it Lateral */
-        .post-it {
-            background-color: var(--brand-pink);
-            color: var(--brand-dark);
-            padding: 30px;
+        /* Cards da Coluna Lateral (Post-it e Placement Chat) */
+        .side-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            padding: 22px;
             border-radius: 14px;
-            box-shadow: 0 10px 25px rgba(80, 32, 100, 0.12);
-            position: sticky;
-            top: 40px;
-            height: fit-content;
+            box-shadow: 0 6px 18px rgba(80, 32, 100, 0.06);
         }
 
-        .post-it h3 {
+        .post-it {
+            background-color: var(--brand-pink);
+            border: none;
+            box-shadow: 0 8px 20px rgba(80, 32, 100, 0.1);
+        }
+
+        .side-card h3 {
             margin-top: 0;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             color: var(--brand-purple-dark);
-            border-bottom: 2px solid rgba(80, 32, 100, 0.2);
-            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(80, 32, 100, 0.15);
+            padding-bottom: 10px;
             text-align: center;
         }
 
@@ -530,13 +540,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.88rem;
             font-family: 'Century Gothic', sans-serif;
             background: rgba(255, 255, 255, 0.7);
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
             transition: background 0.2s;
             color: var(--brand-dark);
         }
@@ -548,7 +558,7 @@
         .topic-content {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             flex: 1;
             overflow: hidden;
             word-break: break-word;
@@ -556,8 +566,8 @@
 
         .topic-item input[type="checkbox"] {
             accent-color: var(--brand-red);
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
             flex-shrink: 0;
         }
@@ -571,10 +581,10 @@
             background: transparent;
             border: none;
             color: var(--brand-red);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            padding: 0 6px;
+            padding: 0 4px;
             line-height: 1;
             border-radius: 4px;
             flex-shrink: 0;
@@ -586,21 +596,21 @@
         }
 
         .completed-section-toggle {
-            margin-top: 20px;
-            font-size: 0.85rem;
+            margin-top: 16px;
+            font-size: 0.8rem;
             font-weight: bold;
             color: var(--brand-purple-dark);
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 10px;
-            border-top: 1px dashed rgba(80, 32, 100, 0.3);
+            padding-top: 8px;
+            border-top: 1px dashed rgba(80, 32, 100, 0.25);
         }
 
         .completed-topics-wrapper {
             display: none;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .completed-topics-wrapper.open {
@@ -609,42 +619,73 @@
 
         .add-topic-box {
             display: flex;
-            gap: 8px;
-            margin-top: 20px;
+            gap: 6px;
+            margin-top: 16px;
         }
 
         .add-topic-box input {
             flex: 1;
-            padding: 10px;
-            border: 1px solid rgba(80, 32, 100, 0.3);
-            border-radius: 8px;
+            padding: 8px;
+            border: 1px solid rgba(80, 32, 100, 0.25);
+            border-radius: 6px;
             font-family: 'Century Gothic', sans-serif;
             background: #FFFFFF;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             color: var(--brand-dark);
             outline: none;
         }
 
+        /* Placement Chat Lateral */
+        .placement-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .placement-item label {
+            font-weight: bold;
+            font-size: 0.82rem;
+            color: var(--brand-purple-dark);
+        }
+
+        .placement-item div[contenteditable="true"] {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px;
+            background: var(--input-bg);
+            min-height: 38px;
+            font-size: 0.85rem;
+            outline: none;
+            transition: background 0.2s;
+        }
+
+        .placement-item div[contenteditable="true"]:focus {
+            background: #FFFFFF;
+            border-color: var(--brand-red);
+        }
+
         .sync-status {
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--brand-red);
-            margin-top: 15px;
+            margin-top: 10px;
             font-weight: bold;
         }
 
         .empty-msg {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: rgba(26, 26, 26, 0.5);
             font-style: italic;
             text-align: center;
-            padding: 10px 0;
+            padding: 8px 0;
         }
     </style>
 </head>
 <body>
 
     <div class="main-container">
+        <!-- Coluna Principal Esquerda -->
         <div class="content-area">
             <header>
                 <h1>Student Progress Tracker</h1>
@@ -674,92 +715,77 @@
                 </div>
             </div>
 
-            <!-- Aba 1: Placement Chat -->
-            <div class="accordion">
-                <div class="accordion-header" onclick="toggleAccordion(this)">Placement Chat</div>
-                <div class="accordion-content">
-                    <table>
-                        <tr>
-                            <th style="width: 35%;">Category</th>
-                            <th>Details</th>
-                        </tr>
-                        <tr>
-                            <td><strong>Your goals:</strong></td>
-                            <td contenteditable="true" id="chat-goals"></td>
-                        </tr>
-                        <tr>
-                            <td><strong>You are concerned with:</strong></td>
-                            <td contenteditable="true" id="chat-concerned"></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Your general interaction with the language is/has been:</strong></td>
-                            <td contenteditable="true" id="chat-interaction"></td>
-                        </tr>
-                        <tr>
-                            <td><strong>What works for you:</strong></td>
-                            <td contenteditable="true" id="chat-works"></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Teacher observations:</strong></td>
-                            <td contenteditable="true" id="chat-observations"></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Aba 2: 4 Week Plan (Abas com Exclusão) -->
+            <!-- Aba 1: 4 Week Plan -->
             <div class="accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">4 Week Plan</div>
                 <div class="accordion-content">
-                    <div class="tabs-header" id="planTabsHeader">
-                        <!-- Abas e botão de adicionar gerados dinamicamente -->
-                    </div>
-                    <div id="planTabsContainer">
-                        <!-- Conteúdo gerado dinamicamente -->
-                    </div>
+                    <div class="tabs-header" id="planTabsHeader"></div>
+                    <div id="planTabsContainer"></div>
                 </div>
             </div>
 
-            <!-- Aba 3: Session & Lesson Log (Abas com Exclusão) -->
+            <!-- Aba 2: Session & Lesson Log -->
             <div class="accordion active" id="session-accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">Session & Lesson Log</div>
                 <div class="accordion-content">
-                    <div class="tabs-header" id="sessionTabsHeader">
-                        <!-- Abas e botão de adicionar gerados dinamicamente -->
-                    </div>
-                    <div id="sessionTabsContainer">
-                        <!-- Conteúdo gerado dinamicamente -->
-                    </div>
+                    <div class="tabs-header" id="sessionTabsHeader"></div>
+                    <div id="sessionTabsContainer"></div>
                 </div>
             </div>
 
             <div class="sync-status" id="sync-status">Loading data...</div>
         </div>
 
-        <!-- Coluna Lateral Post-it -->
-        <aside class="post-it">
-            <h3>Suggested Topics</h3>
-            
-            <div id="topics-list" style="margin-top: 15px;">
-                <!-- Tópicos pendentes aqui -->
-            </div>
+        <!-- Coluna Lateral Direita -->
+        <div class="sidebar-area">
+            <!-- Card 1: Suggested Topics (Post-it) -->
+            <aside class="side-card post-it">
+                <h3>Suggested Topics</h3>
+                
+                <div id="topics-list" style="margin-top: 12px;"></div>
 
-            <div class="completed-section-toggle" onclick="toggleCompletedTopics()">
-                <span>Completed Topics (<span id="completed-count">0</span>)</span>
-                <span id="completed-arrow">⌄</span>
-            </div>
-            <div class="completed-topics-wrapper" id="completedTopicsWrapper">
-                <div id="completed-topics-list"></div>
-            </div>
+                <div class="completed-section-toggle" onclick="toggleCompletedTopics()">
+                    <span>Completed Topics (<span id="completed-count">0</span>)</span>
+                    <span id="completed-arrow">⌄</span>
+                </div>
+                <div class="completed-topics-wrapper" id="completedTopicsWrapper">
+                    <div id="completed-topics-list"></div>
+                </div>
 
-            <div class="add-topic-box">
-                <input type="text" id="new-topic-input" placeholder="New topic...">
-                <button class="btn" onclick="addTopic()" style="padding: 10px 16px; background-color: var(--brand-purple-dark);">+</button>
-            </div>
-        </aside>
+                <div class="add-topic-box">
+                    <input type="text" id="new-topic-input" placeholder="New topic...">
+                    <button class="btn" onclick="addTopic()" style="padding: 8px 14px; background-color: var(--brand-purple-dark);">+</button>
+                </div>
+            </aside>
+
+            <!-- Card 2: Placement Chat (Agora na Lateral) -->
+            <aside class="side-card">
+                <h3>Placement Chat</h3>
+                <div class="placement-item">
+                    <label>Your goals:</label>
+                    <div contenteditable="true" id="chat-goals"></div>
+                </div>
+                <div class="placement-item">
+                    <label>You are concerned with:</label>
+                    <div contenteditable="true" id="chat-concerned"></div>
+                </div>
+                <div class="placement-item">
+                    <label>Your general interaction with language:</label>
+                    <div contenteditable="true" id="chat-interaction"></div>
+                </div>
+                <div class="placement-item">
+                    <label>What works for you:</label>
+                    <div contenteditable="true" id="chat-works"></div>
+                </div>
+                <div class="placement-item">
+                    <label>Teacher observations:</label>
+                    <div contenteditable="true" id="chat-observations"></div>
+                </div>
+            </aside>
+        </div>
     </div>
 
-    <!-- Barra de Ferramentas de Formatação Expandida -->
+    <!-- Barra de Ferramentas de Formatação Flutuante -->
     <div class="toolbar-wrapper">
         <div class="format-toolbar" id="formatToolbar">
             <button class="format-btn" onclick="formatText('bold')" title="Negrito"><b>B</b></button>
@@ -894,7 +920,7 @@
             }, 600);
         }
 
-        /* Gestão de Planos de 4 Semanas (Com Exclusão de Aba) */
+        /* Gestão de Planos de 4 Semanas */
         let activePlanIndex = 0;
 
         function getPlansData() {
@@ -922,9 +948,7 @@
                 plans = [{ title: 'Cycle 1 (Weeks 1-4)', now: '', work: '', after: '', next: '' }];
             }
 
-            if (activePlanIndex >= plans.length) {
-                activePlanIndex = plans.length - 1;
-            }
+            if (activePlanIndex >= plans.length) activePlanIndex = plans.length - 1;
 
             plans.forEach((p, index) => {
                 const item = document.createElement('div');
@@ -936,7 +960,6 @@
                 btn.onclick = () => switchPlanTab(index);
                 item.appendChild(btn);
 
-                // Botão de deletar aba (×)
                 const delBtn = document.createElement('button');
                 delBtn.className = 'delete-tab-btn';
                 delBtn.innerHTML = '×';
@@ -1018,14 +1041,12 @@
                 return;
             }
             plans.splice(index, 1);
-            if (activePlanIndex >= plans.length) {
-                activePlanIndex = plans.length - 1;
-            }
+            if (activePlanIndex >= plans.length) activePlanIndex = plans.length - 1;
             renderPlans(plans);
             saveData();
         }
 
-        /* Gestão de Session & Lesson Logs (Com Exclusão de Aba) */
+        /* Gestão de Session & Lesson Logs (Com Tabela de 3 Colunas + For Next Session) */
         let activeSessionMonthIndex = 0;
 
         function getSessionMonthsData() {
@@ -1037,7 +1058,10 @@
                         date: card.querySelector('.card-date').value || '',
                         topic: card.querySelector('.card-topic').value || '',
                         covered: card.querySelector('.card-covered').innerHTML || '',
-                        teacherNotes: card.querySelector('.card-teacher').innerHTML || '',
+                        grammar: card.querySelector('.card-grammar').innerHTML || '',
+                        vocab: card.querySelector('.card-vocab').innerHTML || '',
+                        pronunciation: card.querySelector('.card-pronunciation').innerHTML || '',
+                        nextSession: card.querySelector('.card-next-session').innerHTML || '',
                         studentNotes: card.querySelector('.card-student').innerHTML || '',
                         isOpen: card.classList.contains('open')
                     });
@@ -1058,12 +1082,10 @@
             containerWrapper.innerHTML = '';
 
             if (months.length === 0) {
-                months = [{ title: 'Month 1', cards: [{date: '', topic: '', covered: '', teacherNotes: '', studentNotes: '', isOpen: true}] }];
+                months = [{ title: 'Month 1', cards: [{date: '', topic: '', covered: '', grammar: '', vocab: '', pronunciation: '', nextSession: '', studentNotes: '', isOpen: true}] }];
             }
 
-            if (activeSessionMonthIndex >= months.length) {
-                activeSessionMonthIndex = months.length - 1;
-            }
+            if (activeSessionMonthIndex >= months.length) activeSessionMonthIndex = months.length - 1;
 
             months.forEach((m, mIndex) => {
                 const item = document.createElement('div');
@@ -1075,7 +1097,6 @@
                 btn.onclick = () => switchSessionMonthTab(mIndex);
                 item.appendChild(btn);
 
-                // Botão de deletar aba de mês (×)
                 const delBtn = document.createElement('button');
                 delBtn.className = 'delete-tab-btn';
                 delBtn.innerHTML = '×';
@@ -1095,7 +1116,7 @@
                 cardsContainer.className = 'cards-container';
 
                 if (!m.cards || m.cards.length === 0) {
-                    m.cards = [{date: '', topic: '', covered: '', teacherNotes: '', studentNotes: '', isOpen: true}];
+                    m.cards = [{date: '', topic: '', covered: '', grammar: '', vocab: '', pronunciation: '', nextSession: '', studentNotes: '', isOpen: true}];
                 }
 
                 m.cards.forEach((c, index) => {
@@ -1117,13 +1138,33 @@
                             <input type="text" class="card-topic" value="${c.topic || ''}" placeholder="e.g. Past Perfect" oninput="updateCardHeader(this)">
                             
                             <label>Covered in session:</label>
-                            <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.covered || ''}</div>
+                            <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.covered || ''}</div>
                             
-                            <label>Teacher notes:</label>
-                            <div class="card-teacher" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.teacherNotes || ''}</div>
-                            
+                            <!-- Nova Tabela de Teacher Notes em 3 Colunas -->
+                            <label>Teacher Notes:</label>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 33.33%;">Grammar and Structure</th>
+                                        <th style="width: 33.33%;">Vocabulary</th>
+                                        <th style="width: 33.33%;">Pronunciation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td contenteditable="true" class="card-grammar">${c.grammar || ''}</td>
+                                        <td contenteditable="true" class="card-vocab">${c.vocab || ''}</td>
+                                        <td contenteditable="true" class="card-pronunciation">${c.pronunciation || ''}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Seção Separada: For Next Session -->
+                            <label>For next session:</label>
+                            <div class="card-next-session" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.nextSession || ''}</div>
+
                             <label>Student notes (optional):</label>
-                            <div class="card-student" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;">${c.studentNotes || ''}</div>
+                            <div class="card-student" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;">${c.studentNotes || ''}</div>
                             
                             <button class="btn btn-delete" onclick="removeCard(this)">Delete Session</button>
                         </div>
@@ -1139,7 +1180,7 @@
 
                 const addCardBtn = document.createElement('button');
                 addCardBtn.className = 'btn';
-                addCardBtn.style.marginTop = '20px';
+                addCardBtn.style.marginTop = '16px';
                 addCardBtn.innerText = 'Adicionar Sessão';
                 addCardBtn.onclick = () => addCardToCurrentMonth(cardsContainer);
                 content.appendChild(addCardBtn);
@@ -1168,7 +1209,7 @@
             const months = getSessionMonthsData();
             months.push({
                 title: `Month ${months.length + 1}`,
-                cards: [{date: '', topic: '', covered: '', teacherNotes: '', studentNotes: '', isOpen: true}]
+                cards: [{date: '', topic: '', covered: '', grammar: '', vocab: '', pronunciation: '', nextSession: '', studentNotes: '', isOpen: true}]
             });
             activeSessionMonthIndex = months.length - 1;
             renderSessionMonths(months);
@@ -1182,9 +1223,7 @@
                 return;
             }
             months.splice(index, 1);
-            if (activeSessionMonthIndex >= months.length) {
-                activeSessionMonthIndex = months.length - 1;
-            }
+            if (activeSessionMonthIndex >= months.length) activeSessionMonthIndex = months.length - 1;
             renderSessionMonths(months);
             saveData();
         }
@@ -1206,13 +1245,31 @@
                     <input type="text" class="card-topic" placeholder="e.g. Past Perfect" oninput="updateCardHeader(this)">
                     
                     <label>Covered in session:</label>
-                    <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;"></div>
+                    <div class="card-covered" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;"></div>
                     
-                    <label>Teacher notes:</label>
-                    <div class="card-teacher" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;"></div>
-                    
+                    <label>Teacher Notes:</label>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 33.33%;">Grammar and Structure</th>
+                                <th style="width: 33.33%;">Vocabulary</th>
+                                <th style="width: 33.33%;">Pronunciation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td contenteditable="true" class="card-grammar"></td>
+                                <td contenteditable="true" class="card-vocab"></td>
+                                <td contenteditable="true" class="card-pronunciation"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <label>For next session:</label>
+                    <div class="card-next-session" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;"></div>
+
                     <label>Student notes (optional):</label>
-                    <div class="card-student" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--input-bg); min-height: 80px; outline: none; font-size: 0.95rem;"></div>
+                    <div class="card-student" contenteditable="true" style="border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--input-bg); min-height: 50px; outline: none; font-size: 0.88rem;"></div>
                     
                     <button class="btn btn-delete" onclick="removeCard(this)">Delete Session</button>
                 </div>
