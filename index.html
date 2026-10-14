@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bloqueia totalmente motores de busca (Google, Bing, etc.) de indexar o site -->
+    <meta name="robots" content="noindex, nofollow">
     <title>Student Progress Tracker</title>
     <!-- Favicon com Emoji de Mão a Escrever -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✍️</text></svg>">
@@ -47,7 +49,6 @@
             min-height: 100vh;
         }
 
-        /* Preferência pela Harlow Solid com fallback gracioso para Oleo Script no Mobile */
         h1, h2, h3, .accordion-header, .side-card h3, .session-accordion-header {
             font-family: 'Harlow Solid', 'Harlow Solid Italic', 'Oleo Script', cursive;
         }
@@ -82,7 +83,6 @@
             font-weight: normal;
         }
 
-        /* Barra de Ferramentas Flutuante */
         .toolbar-wrapper {
             position: fixed;
             bottom: 25px;
@@ -163,7 +163,6 @@
             margin: 0 2px;
         }
 
-        /* Cabeçalho do Aluno */
         .student-header {
             background: var(--card-bg);
             padding: 20px 24px;
@@ -229,7 +228,6 @@
             border-bottom-color: var(--brand-red);
         }
 
-        /* Accordions Principais Compactados */
         .accordion {
             background: var(--card-bg);
             border-radius: 14px;
@@ -282,7 +280,6 @@
             padding: 20px 24px 24px 24px;
         }
 
-        /* Estrutura de Abas Horizontais */
         .tabs-header {
             display: flex;
             gap: 6px;
@@ -371,19 +368,17 @@
             color: #FFFFFF;
         }
 
-        /* Container de Rolagem para Tabelas em Mobile */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Tabelas Compactadas */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 5px;
-            min-width: 500px; /* Garante usabilidade nas colunas pequenas no mobile */
+            min-width: 500px;
         }
 
         th, td {
@@ -415,7 +410,6 @@
             box-shadow: inset 0 0 0 2px var(--brand-red);
         }
 
-        /* Session Cards */
         .cards-container {
             display: flex;
             flex-direction: column;
@@ -494,7 +488,6 @@
             border-color: var(--brand-red);
         }
 
-        /* Botões */
         .btn {
             background-color: var(--brand-red);
             color: #FFFFFF;
@@ -528,7 +521,6 @@
             color: #FFFFFF;
         }
 
-        /* Cards da Coluna Lateral */
         .side-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -673,7 +665,6 @@
             outline: none;
         }
 
-        /* Placement Chat Lateral */
         .placement-item {
             display: flex;
             flex-direction: column;
@@ -719,9 +710,6 @@
             padding: 8px 0;
         }
 
-        /* ==========================================================================
-           REGRAS DE RESPONSIVIDADE DEDICADAS PARA MOBILE (MAX-WIDTH: 900PX)
-           ========================================================================== */
         @media (max-width: 900px) {
             body {
                 padding: 16px 10px;
@@ -789,13 +777,11 @@
 <body>
 
     <div class="main-container">
-        <!-- Coluna Principal Esquerda -->
         <div class="content-area">
             <header>
                 <h1>Student Progress Tracker</h1>
             </header>
 
-            <!-- Cabeçalho do Aluno -->
             <div class="student-header">
                 <div class="clean-field full-width">
                     <label>Student:</label>
@@ -819,7 +805,6 @@
                 </div>
             </div>
 
-            <!-- Aba 1: 4 Week Plan -->
             <div class="accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">4 Week Plan</div>
                 <div class="accordion-content">
@@ -828,7 +813,6 @@
                 </div>
             </div>
 
-            <!-- Aba 2: Session & Lesson Log -->
             <div class="accordion active" id="session-accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">Session & Lesson Log</div>
                 <div class="accordion-content">
@@ -840,9 +824,7 @@
             <div class="sync-status" id="sync-status">Loading data...</div>
         </div>
 
-        <!-- Coluna Lateral Direita -->
         <div class="sidebar-area">
-            <!-- Card 1: Suggested Topics (Post-it) -->
             <aside class="side-card post-it">
                 <h3 class="side-card-header">Suggested Topics</h3>
                 <div class="side-card-body">
@@ -863,7 +845,6 @@
                 </div>
             </aside>
 
-            <!-- Card 2: Placement Chat (Retrábil na Lateral) -->
             <aside class="side-card" id="placementChatCard">
                 <h3 class="side-card-header clickable" onclick="togglePlacementChat()">
                     <span>Placement Chat</span>
@@ -895,7 +876,6 @@
         </div>
     </div>
 
-    <!-- Barra de Ferramentas de Formatação Flutuante -->
     <div class="toolbar-wrapper">
         <div class="format-toolbar" id="formatToolbar">
             <button class="format-btn" onclick="formatText('bold')" title="Negrito"><b>B</b></button>
@@ -919,7 +899,6 @@
     </div>
 
     <script>
-        // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCqGSUBBkQzLhG7BAHPFDhKUD9wAIN5wVg",
             authDomain: "julianawiiraenglishlessons.firebaseapp.com",
@@ -965,7 +944,6 @@
             saveData();
         }
 
-        /* Toggles Inteligentes para Formatação */
         function toggleHighlight() {
             const selection = window.getSelection();
             if (!selection.rangeCount) return;
@@ -1054,7 +1032,6 @@
             }, 600);
         }
 
-        /* Gestão de Planos de 4 Semanas */
         let activePlanIndex = 0;
 
         function getPlansData() {
@@ -1182,7 +1159,6 @@
             saveData();
         }
 
-        /* Gestão de Session & Lesson Logs */
         let activeSessionMonthIndex = 0;
 
         function getSessionMonthsData() {
@@ -1527,7 +1503,6 @@
             saveData();
         }
 
-        // Listener Sincronizado do Firebase
         docRef.onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
@@ -1581,7 +1556,6 @@
             document.getElementById('sync-status').innerText = "Error saving changes";
         });
 
-        // Eventos Globais de Salvamento
         window.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('input, [contenteditable="true"]:not(#field-link)').forEach(el => {
                 el.addEventListener('input', saveData);
